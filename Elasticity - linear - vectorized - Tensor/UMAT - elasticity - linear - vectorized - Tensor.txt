@@ -1,0 +1,71 @@
+      subroutine umat47v(cm,d1,d2,d3,d4,d5,d6,sig1,sig2,
+     . sig3,sig4,sig5,sig6,epsps,hsvs,lft,llt,dt1siz,capa,
+     . etype,tt,temps,failels,nlqa,crv,nnpcrv,cma,qmat,elsizv,idelev,
+     . reject)
+c
+c******************************************************************
+c|  Livermore Software Technology Corporation  (LSTC)             |
+c|  ------------------------------------------------------------  |
+c|  Copyright 1987-2008 Livermore Software Tech. Corp             |
+c|  All rights reserved                                           |
+c******************************************************************
+c
+      use Tensor
+      include 'nlqparm'
+      dimension d1(*),d2(*),d3(*),d4(*),d5(*),d6(*)
+      dimension sig1(*),sig2(*),sig3(*),sig4(*),sig5(*),sig6(*)
+      dimension cm(*),epsps(*),hsvs(nlq,*),dt1siz(*)
+      dimension temps(*),crv(lq1,2,*),cma(*),qmat(nlq,3,3),elsizv(*)
+      integer nnpcrv(*)
+      INTEGER8 idelev(*)
+      logical failels(*),reject
+      character*5 etype
+      dimension sig(6),eps(6)!,hsv(NHISVAR),thhsvi(100)
+c Declarations
+      real lame_lambda, shearMod_mu, bulkMod_kappa
+      type(Tensor2) :: Eye, d_eps, stress, stress_n
+c Material parameters
+      lame_lambda = cm(1)
+      shearMod_mu = cm(2)
+      bulkMod_kappa = lame_lambda + 2./3. * shearMod_mu
+c Second order identity tensor
+      Eye = identity2(Eye)
+c
+c Parallelisation
+      do i = lft,llt
+c Store the (i) entries into 'sig' and 'eps'
+       stress_n = sigX_to_ten(sig1(i), sig2(i), sig3(i),
+     &                        sig4(i), sig5(i), sig6(i))
+c       sig(1)=sig1(i)
+c       sig(2)=sig2(i)
+c       sig(3)=sig3(i)
+c       sig(4)=sig4(i)
+c       sig(5)=sig5(i)
+c       sig(6)=sig6(i)
+c       stress_n = symstore_2sa(sig)
+       d_eps = dX_to_ten(d1(i), d2(i), d3(i),
+     &                   d4(i), d5(i), d6(i))
+c       eps(1)=d1(i)
+c       eps(2)=d2(i)
+c       eps(3)=d3(i)
+c       eps(4)=d4(i)
+c       eps(5)=d5(i)
+c       eps(6)=d6(i)  
+c       d_eps = str2ten_2s(eps,3,3,6)
+c The actual material model computing the stress
+       stress = stress_n + lame_lambda * tr(d_eps) * Eye
+     &                  + 2.*shearMod_mu*d_eps
+c Put the stresses for this (i) back into the total sigX
+       call ten_to_sigX(stress, sig1(i), sig2(i), sig3(i),
+     &                          sig4(i), sig5(i), sig6(i))
+c       sig(1:6) = asarray(voigt(stress),6)
+c       sig1(i)=sig(1)
+c       sig2(i)=sig(2)
+c       sig3(i)=sig(3)
+c       sig4(i)=sig(4)
+c       sig5(i)=sig(5)
+c       sig6(i)=sig(6)
+      enddo
+c
+      return
+      end

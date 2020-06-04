@@ -1,0 +1,52 @@
+      subroutine utan47v(cm,d1,d2,d3,d4,d5,d6,sig1,sig2,
+     . sig3,sig4,sig5,sig6,epsps,hsvs,unsym,lft,llt,dt1siz,capa,
+     . etype,tt,temps,dsave,nlqa,crv,nnpcrv,failels,cma,qmat)
+c
+c******************************************************************
+c|  Livermore Software Technology Corporation  (LSTC)             |
+c|  ------------------------------------------------------------  |
+c|  Copyright 1987-2008 Livermore Software Tech. Corp             |
+c|  All rights reserved                                           |
+c******************************************************************
+c
+c This is just elasticity, maybe we refer to utan43
+      use Tensor
+      include 'nlqparm'
+      dimension d1(*),d2(*),d3(*),d4(*),d5(*),d6(*)
+      dimension sig1(*),sig2(*),sig3(*),sig4(*),sig5(*),sig6(*)
+      dimension epsps(*),hsvs(nlq,*),dt1siz(*),cm(*),qmat(nlq,3,3)
+      dimension temps(*),dsave(nlq,6,*),crv(lq1,2,*),cma(*)
+      integer nnpcrv(*)
+      logical failels(*),unsym
+      character*5 etype
+      dimension sig(6),eps(6),es(6,6)
+c Declarations
+      type(Tensor2) :: Eye
+      type(Tensor4)  :: tangent_C, IxI, I_dev
+c
+      real lame_lambda, shearMod_mu, bulkMod_kappa
+      real con1, con2
+c Material parameters
+      lame_lambda = cm(1)
+      shearMod_mu = cm(2)
+      bulkMod_kappa = cm(1) + 2./3. * shearMod_mu
+c Second order identity tensor
+      Eye = identity2(Eye)
+c Fourth order tensor
+      IxI = Eye.dya.Eye
+      I_dev = deviatoric_I4(Eye)
+c
+      do i=lft,llt
+c Compute the tangent modulus as a fourth order tensor
+          tangent_C = bulkMod_kappa * IxI
+     &                 + 2. * shearMod_mu * I_dev
+c Transform tensor 'tangent_C' into the vectorial 'es'
+          es(1:6,1:6) = asarray(voigt(tangent_C),6,6)
+c Put the 'es' for this (i) into the total dsave
+          forall(k=1:6,j=1:6)
+     &         dsave(i,j,k)=es(j,k)
+c
+      enddo
+c
+      return
+      end
