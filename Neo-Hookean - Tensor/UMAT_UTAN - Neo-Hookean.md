@@ -274,3 +274,6 @@ c
       return
       end
 ```
+
+## Example material card
+<img src="https://github.com/jfriedlein/usrmat_LS-Dyna_Fortran/blob/master/Neo-Hookean%20-%20Tensor/material-card%20example.png" width="500">
