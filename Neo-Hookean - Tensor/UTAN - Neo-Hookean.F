@@ -1,12 +1,6 @@
       subroutine utan47(cm,eps,sig,epsp,hsv,dt1,unsym,capa,etype,tt,
      1 temper,es,crv,nnpcrv,failel,cma,qmat)
 c
-c******************************************************************
-c|  Livermore Software Technology Corporation  (LSTC)             |
-c|  ------------------------------------------------------------  |
-c|  Copyright 1987-2008 Livermore Software Tech. Corp             |
-c|  All rights reserved                                           |
-c******************************************************************
 c Use the tensor toolbox
       use Tensor
       use TensorXLSDYNA

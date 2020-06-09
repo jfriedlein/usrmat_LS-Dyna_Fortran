@@ -5,6 +5,7 @@ The following example discusses the implementation of the standard Neo-Hookean m
 ## Kinematics
 In LS-DYNA we first have to set the option "IHYPER=1" in the material card keyword (e.g. *MAT_USER_DEFINED_MATERIAL_MODELS) to be able to access the deformation gradient <a href="https://www.codecogs.com/eqnedit.php?latex=\boldsymbol{F}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\boldsymbol{F}" title="\boldsymbol{F}" /></a>. The latter is then stored on top of the defined number of history variables. So, in case we don't require any history variables for our material model (NHV=0), as for this hyperelastic model, the deformation gradient is stored in the initial "hsv" entries 1 to 9 columnwise. As a consquence, we can extract it via the function
 ```fortran
+type(Tensor2) :: defoGrad_F
 defoGrad_F  = defoGrad(hsv(1:9))
 ```
 which takes the list entries 1 to 9 and stores them into the second order tensor `defoGrad_F`.
@@ -160,7 +161,7 @@ c
 In LS-Dyna the computation of the material (stress and history update) and the tangent are split up into two separate subroutines. The tangent is implemented in the file `dyn21utan.F` into the subroutines `utanXX`, where the material id `XX` has to correspond to id of the `umatXX` subroutine it belongs to.
 We have already included the necessary files in the `dyn21umats.F`file, so for the tangent we can directly scroll down to the subroutine `utan43`.
 ```fortran
-      subroutine utan47(cm,eps,sig,epsp,hsv,dt1,unsym,capa,etype,tt,
+      subroutine utan43(cm,eps,sig,epsp,hsv,dt1,unsym,capa,etype,tt,
      1 temper,es,crv,nnpcrv,failel,cma,qmat)
 ```
 We again load the modules
@@ -230,7 +231,7 @@ and end the subroutine.
 
 ### The plain program
 ```fortran
-      subroutine utan47(cm,eps,sig,epsp,hsv,dt1,unsym,capa,etype,tt,
+      subroutine utan43(cm,eps,sig,epsp,hsv,dt1,unsym,capa,etype,tt,
      1 temper,es,crv,nnpcrv,failel,cma,qmat)
 c
       use Tensor
