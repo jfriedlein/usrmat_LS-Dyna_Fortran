@@ -128,4 +128,5 @@ utan43
 
 ## todo
 * Check dyn21 etc. files in older versions
+* Check LS-Dyna 2D (plane strain) format of eps and sig
 
