@@ -8,8 +8,8 @@ Basics to implement user-defined materials (usrmat, umat) in LS-Dyna with Fortra
 ## Requirements and suggestions
 * An object version of the LS-Dyna version you wish to use. Everything outlined here refers to version R11.1. Their might be slight differences compared to older version, e.g. where to find the files. The object version is a compressed package (e.g. .zip) typically ending with `_lib.zip`. You can acquire this package from your LSTC support or, in case you possess the login credentials for the `ftp.lstc.com` download side section 'objects' (not 'user'), you can download the version from `https://ftp.lstc.com/objects/pc-dyna/` where all available version are listed (e.g. the here used 'ls-dyna_smp_d_R11_1_0_139588_winx64_ifort2017vs2017_lib.zip').
 * For the coding you could use any text editor, however we recommend the following setup:
-** Visual Studio 2017
-** Intel Parallel Studio XE 2017 (Fortran compiler)
+  * Visual Studio 2017
+  * Intel Parallel Studio XE 2017 (Fortran compiler)
 
 @todo Add an open source option (e.g. gfortran?)
 
@@ -47,7 +47,7 @@ If you are still reading and skipped the last recommendation, you might be as na
 * You cannot start programming directly at the left hand side, but must keep a tab space (6 blanks???). The first few characters are required for special commands and identified by the compiler from their position. Similar to the holes punched at exactly the right place.
 * The width of the code is limited to 66??? characters (width of a punchcard, can be extended by a compiler flag). So when your equations or lines of code get too long, you have to split them into more lines. This continuation of lines requires a special continuation character placed at the correct position (6. character) of the new lines as shown in the code snippet. Visual studio highlights any character at this specific place, so make sure to place it correctly. You can use any character (e.g. '&' or number the new lines '1', '2', ...), it only matters that there is something (=a hole).
 
-```
+```fortran
 c In a single line:
         i = 1 + 2
 c Or equivalently split up (the position of the continued line does not matter)
@@ -60,10 +60,10 @@ c Or equivalently split up (the position of the continued line does not matter)
 todo Check use of `implicit none` and required additions to existing ls-dyna code
 
 * For C++ programmers the concept of integer divison might already be known. But for everyone else, who hasn't yet had the pleasure, a small note (or just consult the internet aka google it). When you e.g. divide 1 by 3 as
-
-`real a
-
- a = 1/3`
+```fortran
+real a
+a = 1/3`
+```
 
 and assign the value to the variable `a` (declared as 'real', which is similar to C++ 'double'). 'a' does NOT contain the floating point number '0.3333...' but is '0'. Why? The numbers '1' and '3' are integers, hence the fraction also acquires the data type integer leaving you with the integer part of one third, which is zero. One correct way to avoid this is
 
@@ -105,7 +105,7 @@ In case the above equations in Voigt notation are not common to you, because you
 Here I want to continue with a detailed description on the usage of the toolbox in LS-Dyna.
 
 [dyn21umats.F]:
-```
+```fortran
 ...
 #define NOR4
 #include ...
@@ -113,7 +113,7 @@ Here I want to continue with a detailed description on the usage of the toolbox 
 umat43
 ```
 [dyn21utan.F]:
-```
+```fortran
 utan43
 ```
 (How compact, slim, insensitive to errors and beautiful tensors can be.)
