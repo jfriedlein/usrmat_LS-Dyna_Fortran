@@ -1,6 +1,6 @@
 ## Example: Neo-Hookean Material (in LS-DYNA)
 
-The following example discusses the implementation of the standard Neo-Hookean material model to show the usage of the tensor toolbox in LS-DYNA. The material model describes hyperelasticity and is formulated in the spatial (eulerian) configuration.
+The following example discusses the implementation of the standard Neo-Hookean material model to show the usage of the tensor toolbox in LS-DYNA. The material model describes hyperelasticity and is formulated in the spatial (eulerian) configuration. Be aware that in LS-Dyna umat (stress and history update) and utan (tangent) are split up, as noted in the section "User-defined tangent routine "utan"".
 
 ## Kinematics
 In LS-DYNA we first have to set the option "IHYPER=1" in the material card keyword (e.g. *MAT_USER_DEFINED_MATERIAL_MODELS) to be able to access the deformation gradient <a href="https://www.codecogs.com/eqnedit.php?latex=\boldsymbol{F}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\boldsymbol{F}" title="\boldsymbol{F}" /></a>. The latter is then stored on top of the defined number of history variables. So, in case we don't require any history variables for our material model (NHV=0), as for this hyperelastic model, the deformation gradient is stored in the initial "hsv" entries 1 to 9 columnwise. As a consquence, we can extract it via the function
@@ -15,10 +15,12 @@ The Cauchy stress tensor <a href="https://www.codecogs.com/eqnedit.php?latex=\bo
 <a href="https://www.codecogs.com/eqnedit.php?latex=\boldsymbol{\sigma}&space;=&space;\frac{1}{J}&space;\cdot&space;\left&space;[&space;\mu&space;\cdot&space;\left&space;[&space;\boldsymbol{F}&space;\boldsymbol{F}^T&space;-&space;\boldsymbol{I}&space;\right&space;]&space;&plus;&space;\lambda&space;\ln(J)&space;\boldsymbol{I}&space;\right&space;]" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\boldsymbol{\sigma}&space;=&space;\frac{1}{J}&space;\cdot&space;\left&space;[&space;\mu&space;\cdot&space;\left&space;[&space;\boldsymbol{F}&space;\boldsymbol{F}^T&space;-&space;\boldsymbol{I}&space;\right&space;]&space;&plus;&space;\lambda&space;\ln(J)&space;\boldsymbol{I}&space;\right&space;]" title="\boldsymbol{\sigma} = \frac{1}{J} \cdot \left [ \mu \cdot \left [ \boldsymbol{F} \boldsymbol{F}^T - \boldsymbol{I} \right ] + \lambda \ln(J) \boldsymbol{I} \right ]" /></a>
 
 The Eulerian tangent modulus is computed as
+
 <a href="https://www.codecogs.com/eqnedit.php?latex=\boldsymbol{E}&space;=&space;\frac{1}{J}&space;\cdot&space;\left&space;[&space;\lambda&space;\boldsymbol{I}&space;\otimes&space;\boldsymbol{I}&space;&plus;&space;2&space;\left&space;[&space;\mu&space;-&space;\lambda&space;\ln&space;(J)&space;\right&space;]&space;\overset{4}{I}&space;\right&space;]" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\boldsymbol{E}&space;=&space;\frac{1}{J}&space;\cdot&space;\left&space;[&space;\lambda&space;\boldsymbol{I}&space;\otimes&space;\boldsymbol{I}&space;&plus;&space;2&space;\left&space;[&space;\mu&space;-&space;\lambda&space;\ln&space;(J)&space;\right&space;]&space;\overset{4}{I}&space;\right&space;]" title="\boldsymbol{E} = \frac{1}{J} \cdot \left [ \lambda \boldsymbol{I} \otimes \boldsymbol{I} + 2 \left [ \mu - \lambda \ln (J) \right ] \overset{4}{I} \right ]" /></a>
 
 With
 * Jacobian, determinant of the deformation gradient
+
 <a href="https://www.codecogs.com/eqnedit.php?latex=J&space;=&space;\text{det}(\boldsymbol{F})" target="_blank"><img src="https://latex.codecogs.com/gif.latex?J&space;=&space;\text{det}(\boldsymbol{F})" title="J = \text{det}(\boldsymbol{F})" /></a>
 * First and second Lame parameters 
 <a href="https://www.codecogs.com/eqnedit.php?latex=\lambda" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\lambda" title="\lambda" /></a> and <a href="https://www.codecogs.com/eqnedit.php?latex=\mu" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\mu" title="\mu" /></a>
