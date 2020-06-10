@@ -3,7 +3,7 @@
 The following example discusses the implementation of the standard Neo-Hookean material model to show the usage of the tensor toolbox in LS-DYNA. The material model describes hyperelasticity and is formulated in the spatial (eulerian) configuration for 3D and axisymmetric computations (@todo not yet adapted for 2D). Be aware that in LS-Dyna umat (stress and history update) and utan (tangent) are split up, as noted in the section "User-defined tangent routine "utan"".
 
 ## Kinematics
-In LS-DYNA we first have to set the option "IHYPER=1" in the material card keyword (e.g. *MAT_USER_DEFINED_MATERIAL_MODELS) to be able to access the deformation gradient <a href="https://www.codecogs.com/eqnedit.php?latex=\boldsymbol{F}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\boldsymbol{F}" title="\boldsymbol{F}" /></a>. The latter is then stored on top of the defined number of history variables. So, in case we don't require any history variables for our material model (NHV=0), as for this hyperelastic model, the deformation gradient is stored in the initial "hsv" entries 1 to 9 columnwise. As a consquence, we can extract it via the function
+In LS-DYNA we first have to set the option "IHYPER=1" in the material card keyword (e.g. *MAT_USER_DEFINED_MATERIAL_MODELS) to be able to access the deformation gradient <a href="https://www.codecogs.com/eqnedit.php?latex=\boldsymbol{F}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\boldsymbol{F}" title="\boldsymbol{F}" /></a> (see section "Example material card"). The latter is then stored on top of the defined number of history variables. So, in case we don't require any history variables for our material model (NHV=0), as for this hyperelastic model, the deformation gradient is stored in the initial "hsv" entries 1 to 9 columnwise. As a consquence, we can extract it via the function
 ```fortran
 type(Tensor2) :: defoGrad_F
 defoGrad_F  = defoGrad(hsv(1:9))
@@ -158,8 +158,8 @@ c
 
 ## User-defined tangent routine "utan"
 ### The commented program
-In LS-Dyna the computation of the material (stress and history update) and the tangent are split up into two separate subroutines. The tangent is implemented in the file `dyn21utan.F` into the subroutines `utanXX`, where the material id `XX` has to correspond to id of the `umatXX` subroutine it belongs to.
-We have already included the necessary files in the `dyn21umats.F`file, so for the tangent we can directly scroll down to the subroutine `utan43`.
+In LS-Dyna the computation of the material (stress and history update) and the tangent are split up into two separate subroutines. The tangent is implemented in the file `dyn21utan.F` into the subroutines `utanXX`, where the material id `XX` has to correspond to the id of the `umatXX` subroutine it belongs to.
+We have already included the necessary files in the `dyn21umats.F` file, so for the tangent we can directly scroll down to the subroutine `utan43`.
 ```fortran
       subroutine utan43(cm,eps,sig,epsp,hsv,dt1,unsym,capa,etype,tt,
      1 temper,es,crv,nnpcrv,failel,cma,qmat)
