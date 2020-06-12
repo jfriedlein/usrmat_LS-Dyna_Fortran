@@ -80,8 +80,12 @@ because you never know when you might change your mind and rewrite parts of equa
 
 ## Our first user material
 1. Open your working directory (the folder with the unpacked object version, e.g. `ls-dyna_smp_d_R11_1_0_139588_winx64_ifort2017vs2017_lib`) in Visual Studio.
-2. Implement your material model code (computation of stress, history variables ...), in the file `dyn21umats.F`, for instance linear elasticity. We code our model in the first unused umat, here umat43.
+2. Implement your material model code (computation of stress, history variables ...), in the file `dyn21umats.F`, for instance linear elasticity. We code our model in the first unused umat, here umat43. Note that we right away start with tensor based models.
+[dyn21umats.F]:
 ```fortran
+#define NOR4
+#include 'ttb(ttb_library.F'
+[...]
       subroutine umat43 (cm,eps,sig,epsp,hsv,dt1,capa,etype,tt,
      1 temper,failel,crv,nnpcrv,cma,qmat,elsiz,idele,reject)
 c
@@ -121,18 +125,14 @@ c
 c The function 'symstore_2sa' stores the array 'sig' as the tensor 'stress_n',
       stress_n = symstore_2sa(sig)
 c
-c Our stress equation in tensor notation, finally
-c ... happily, thanks to Andreas Dutzler!
+c Our usual stress equation in tensor notation instead of Voigt, finally
+c ... happily, thanks to Andreas Dutzler [https://github.com/adtzlr/ttb]!
+c Be aware, that we get the strain increments, so we have to modify our
+c usual equations a bit. (Gets irrelevant when you use finite strains and
+c the deformation gradient.)
       stress = stress_n + lame_lambda * tr(d_eps) * Eye
      &                  + 2.*shearMod_mu*d_eps
 c Transform the stress tensor back into a vector, equivalent to:
-c      sig(1) = stress%ab(1,1)
-c      sig(2) = stress%ab(2,2)
-c      sig(3) = stress%ab(3,3)
-c      sig(4) = stress%ab(1,2)
-c      sig(5) = stress%ab(2,3)
-c      sig(6) = stress%ab(1,3)
-c One-liner:
       sig(1:6) = asarray(voigt(stress),6)
 c
 c Everything is done with just a few lines of code ... perfect
@@ -140,48 +140,84 @@ c
       return
       end
 ```
-declare variables
-write code
-return sig
+(How compact, slim, insensitive to errors and beautiful tensors can be.)
+
 3. Following the above test setup: Delete the possibly existing lsdyna.exe in the working directory. Start the Fortran compiler as described in the above steps 2 and 3.
 4. Run nmake.
-5. The code should successfuly be compiled and no error message should be shown when the lsdyna.exe was created.
-6. Run an LS-Dyna simulation using the freshly compiled lsdyna.exe.
+5. The code should successfully be compiled and no error message ought to be shown when the lsdyna.exe was created.
+6. Run an LS-Dyna simulation using the freshly compiled lsdyna.exe and select your material model in the material card.
+
+@todo explain setup of material card and maybe one-element test
+
 ```
 Some notes on proper simulation settings for testing umats
 * Full NR, ...
 ```
-7. Often you can test the material model even without having to implement the tangent by running your simulation as explicit, which does not at all require a tangent (motto of explicit computation: 'Don't look, just go.'). If the material response is as expected, you can again switch to implicit.
-8. Next we implement our tangent. This must be done in the file `dyn21utan.F` (user tangent) and in subroutine with the same ID (here 43). For linear elasticity the tangent is constant and independent of the input arguments. For more complicated models the umat-utan function split can cause some problems that are discussed later on. Here we just implement the constant tangent, which in Voigt notation fills a 6x6 matrix called `es`:
-```
-utan43
+7. Often you can test the material model even without having to implement the tangent (note: We haven't implemented the tangent yet.) by running your simulation as explicit, which does not at all require a tangent (motto of explicit computation: 'Don't look, just go.'). If the material response is as expected, you can again switch to implicit.
+8. Next we implement our tangent. This must be done in the file `dyn21utan.F` (user tangent) and in the subroutine with the same ID (here 43). For linear elasticity the tangent is constant and independent of the input arguments. For more complicated models the umat-utan function split can cause some problems that are discussed later on. Here we just implement the constant tangent, which in Voigt notation fills a 6x6 matrix called `es`:
+[dyn21utan.F]:
+```fortran
+      subroutine utan43(cm,eps,sig,epsp,hsv,dt1,unsym,capa,etype,tt,
+     1 temper,es,crv,nnpcrv,failel,cma,qmat)
+c
+c******************************************************************
+c The computations of the tangent in Tensor notation also requires the split of
+c the code into three parts.
+c 1. Transform the arrays to tensors.
+c 2. Compute the quantities with tensors.
+c 3. Transform the tensorial results back to arrays.
+      use Tensor
+      include 'nlqparm'
+      dimension cm(*),eps(*),sig(*),hsv(*),crv(lq1,2,*),cma(*)
+c cm, eps: as  above
+c sig: output stress from the material model umat (not from the last converged step)
+c hsv: output history from the umat (not from the last converged step)
+c for details: see section below
+      integer nnpcrv(*)
+      dimension es(6,*),qmat(3,3)
+      logical failel,unsym
+      character*5 etype
+c Declarations
+      type(Tensor2) :: Eye
+      type(Tensor4)  :: tangent_C, IxI, I_dev
+c
+      real lame_lambda, shearMod_mu, bulkMod_kappa
+      real con1, con2
+c Material parameters
+      lame_lambda = cm(1)
+      shearMod_mu = cm(2)
+      bulkMod_kappa = cm(1) + 2./3. * shearMod_mu
+c Second order identity tensor
+      Eye = identity2(Eye)
+c Fourth order tensors
+      IxI = Eye.dya.Eye
+      I_dev = (Eye.cdya.Eye) - 1./3.*(Eye.dya.Eye)
+c Compute the tangent modulus as a fourth order tensor
+      tangent_C = bulkMod_kappa * IxI
+     &            + 2. * shearMod_mu * I_dev
+c Transform tensor 'tangent_C' into the matrix 'es'
+      es(1:6,1:6) = asarray(voigt(tangent_C),6,6)
+c
+      return
+      end
 ```
 
 ## Material models using tensors
-In case the above equations in Voigt notation are not common to you, because you're used to tensor-based models and tensor notation. Don't give up hope! There is a superb Tensor Toolbox for Fortran (ttb, https://github.com/adtzlr/ttb) with a comprehensive documentation (https://adtzlr.github.io/ttb/) that enables you to use tensors and tensor operations. Regarding the installation of the toolbox I hand you over to the capable hands of Andreas outlining the steps here https://adtzlr.github.io/ttb/installation.html.
+In case you like the above equations in Tensor notation and you are not familiar with the in LS-Dyna usual Voigt notation. There is a superb Tensor Toolbox for Fortran (ttb, https://github.com/adtzlr/ttb) with a comprehensive documentation (https://adtzlr.github.io/ttb/) that enables you to use tensors and tensor operations. Regarding the installation of the toolbox I hand you over to the capable hands of Andreas outlining the steps here https://adtzlr.github.io/ttb/installation.html.
+You can find a more advanced example in the ttb documentation specific for LS-Dyna.
 
-Here I want to continue with a detailed description on the usage of the toolbox in LS-Dyna.
+@todo Add the link when the example is added.
 
-[dyn21umats.F]:
-```fortran
-...
-#define NOR4
-#include ...
-[...]
-umat43
-```
-[dyn21utan.F]:
-```fortran
-utan43
-```
-(How compact, slim, insensitive to errors and beautiful tensors can be.)
+Refer to the example files (elasto-plasticity, ...)
+
+## Outline of the interface for umat and utan
+@todo Add a figure that shows which values are input in usrmat and utan (e.g. new eps, old sig, tmp_sig, hsv ...)
+
 
 ## Some considerations on the split of material model (umat) and tangent (utan)
 * Compute constant tangent in utan
 * reconstruct data from inputs
 * store `es` in hsv
-
-@todo Add a figure that shows which values are input in usrmat and utan (e.g. new eps, old sig, tmp_sig, hsv ...)
 
 
 ## todo
