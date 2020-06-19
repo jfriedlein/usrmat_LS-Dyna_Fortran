@@ -74,7 +74,7 @@ and assign the value to the variable `a` (declared as 'real', which is similar t
 
 Here, the dots that follow the integer, mark them as floating point numbers and hence the variable `a` is '0.333...'. As a recommendation, always add the dot after coded numbers e.g. also in
 
-'a = 2. * 5. * 0.5'
+`a = 2. * 5. * 0.5`
 
 because you never know when you might change your mind and rewrite parts of equations using a divison.
 
@@ -84,7 +84,7 @@ because you never know when you might change your mind and rewrite parts of equa
 [dyn21umats.F]:
 ```fortran
 #define NOR4
-#include 'ttb(ttb_library.F'
+#include 'ttb/ttb_library.F'
 [...]
       subroutine umat43 (cm,eps,sig,epsp,hsv,dt1,capa,etype,tt,
      1 temper,failel,crv,nnpcrv,cma,qmat,elsiz,idele,reject)
@@ -140,7 +140,7 @@ c
       return
       end
 ```
-(How compact, slim, insensitive to errors and beautiful tensors can be.)
+(Note how compact, slim, insensitive to errors and beautiful tensors can be.)
 
 3. Following the above test setup: Delete the possibly existing lsdyna.exe in the working directory. Start the Fortran compiler as described in the above steps 2 and 3.
 4. Run nmake.
@@ -208,7 +208,7 @@ You can find a more advanced example in the ttb documentation specific for LS-Dy
 
 @todo Add the link when the example is added.
 
-Refer to the example files (elasto-plasticity, ...)
+Refer to some more example files (elasto-plasticity, ...)
 
 ## Outline of the interface for umat and utan
 @todo Add a figure that shows which values are input in usrmat and utan (e.g. new eps, old sig, tmp_sig, hsv ...)
