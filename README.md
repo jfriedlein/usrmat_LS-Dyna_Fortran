@@ -1,5 +1,5 @@
 # usrmat_LS-Dyna_Fortran
-Basics to implement user-defined materials (usrmat, umat) in LS-Dyna with Fortran
+Basics to implement user-defined materials (usrmat, umat, utan) in LS-Dyna with Fortran
 
 ## References
 * LS-Dyna user manual Vol. I, Appendix A "User Defined Materials" [LSTC Download Manuals](http://lstc.com/download/manuals)
@@ -211,8 +211,21 @@ You can find a more advanced example in the ttb documentation specific for LS-Dy
 Refer to some more example files (elasto-plasticity, ...)
 
 ## Outline of the interface for umat and utan
-@todo Add a figure that shows which values are input in usrmat and utan (e.g. new eps, old sig, tmp_sig, hsv ...)
+The following figure shows the typically relevant input/output arguments. The UMAT-subroutine gets the incremental strain `eps`
 
+<a href="https://www.codecogs.com/eqnedit.php?latex=\Delta&space;\boldsymbol{\varepsilon}_\ell&space;=&space;\boldsymbol{\varepsilon}_\ell&space;-&space;\boldsymbol{\varepsilon}_n" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\Delta&space;\boldsymbol{\varepsilon}_\ell&space;=&space;\boldsymbol{\varepsilon}_\ell&space;-&space;\boldsymbol{\varepsilon}_n" title="\Delta \boldsymbol{\varepsilon}_\ell = \boldsymbol{\varepsilon}_\ell - \boldsymbol{\varepsilon}_n" /></a>
+
+Here, the index `l` denotes the values from the current iteration and `n` the values from the last converged load step. Some background information and context regarding the herein used notation can be found in the following scheme.
+
+<img src="https://github.com/jfriedlein/usrmat_LS-Dyna_Fortran/blob/master/images/general%20solution%20method" width="500">
+
+So let's move on. Secondly, we receive the stresses `sig` that contain the Cauchy stress from the last converged load step `n`. The history variables, such as the plastic strain or the hardening for plasticity, are summarised in the list `hsv`. Material parameters, like the Young's modulus or Poisson's ratio, set in the material card, are stored in the list `cm`. Lastly, we can also find the deformation gradient `F` after setting the option `IHYPER` in the history.
+
+Now the material model must compute the new Cauchy stress with index `tmp` and update the history variables.
+
+In the UTAN-routine we receive the temporary Cauchy stress and history from UMAT. With this we have to compute the tangent. In the world of tensors the latter needs to be the fourth order Eulerian tangent moduli `E`.
+
+<img src="https://github.com/jfriedlein/usrmat_LS-Dyna_Fortran/blob/master/images/UMAT_UTAN%20-%20arguments.png" width="500">
 
 ## Some considerations on the split of material model (umat) and tangent (utan)
 * Compute constant tangent in utan
