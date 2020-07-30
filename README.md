@@ -1,11 +1,6 @@
 # usrmat_LS-Dyna_Fortran
 Basics to implement user-defined materials (usrmat, umat, utan) in LS-Dyna with Fortran
 
-## References
-* LS-Dyna user manual Vol. I, Appendix A "User Defined Materials" [LSTC Download Manuals](http://lstc.com/download/manuals)
-* ["How To - user defined material models with LS-Dyna on Windows"](https://www.researchgate.net/publication/327623424_How_To_-_user_defined_material_models_with_LS-Dyna_on_Windows) by Leon Kellner
-* ["An Overview of  User Defined Interfaces in LS-DYNA"](https://www.dynamore.de/de/download/papers/forum10/papers/L-I-01.pdf) by Tobias Erhart
-
 ## Requirements and suggestions
 * An object version of the LS-Dyna version you wish to use. Everything outlined here refers to version R11.1. Their might be slight differences compared to older version, e.g. where to find the files. The object version is a compressed package (e.g. .zip) typically ending with `_lib.zip`. You can acquire this package from your LSTC support or, in case you possess the login credentials for the `ftp.lstc.com` download side section 'objects' (not 'user'), you can download the version from `https://ftp.lstc.com/objects/pc-dyna/` where all available version are listed (e.g. the here used 'ls-dyna_smp_d_R11_1_0_139588_winx64_ifort2017vs2017_lib.zip').
 * For the coding you could use any text editor, however we recommend: Visual Studio 2017
@@ -66,7 +61,7 @@ todo Check use of `implicit none` and required additions to existing ls-dyna cod
 * For C++ programmers the concept of integer divison might already be known. But for everyone else, who hasn't yet had the pleasure, a small note (or just consult the internet aka google it). When you e.g. divide 1 by 3 as
 ```fortran
 real a
-a = 1/3`
+a = 1/3
 ```
 and assign the value to the variable `a` (declared as 'real', which is similar to C++ 'double'). `a` does NOT contain the desired floating point number '0.3333...' but is '0'. Why? The numbers '1' and '3' are integers, hence the fraction also acquires the data type integer leaving you with the integer part of one third, which is zero. One correct way to avoid this is
 
@@ -81,6 +76,7 @@ because you never know when you might change your mind and rewrite parts of equa
 ## Our first user material
 1. Open your working directory (the folder with the unpacked object version, e.g. `ls-dyna_smp_d_R11_1_0_139588_winx64_ifort2017vs2017_lib`) in Visual Studio.
 2. Implement your material model code (computation of stress, history variables ...), in the file `dyn21umats.F`, for instance linear elasticity. We code our model in the first unused umat, here umat43. Note that we right away start with tensor based models.
+
 [dyn21umats.F]:
 ```fortran
 #define NOR4
@@ -204,11 +200,9 @@ c
 
 ## Material models using tensors
 In case you like the above equations in Tensor notation and you are not familiar with the in LS-Dyna usual Voigt notation. There is a superb Tensor Toolbox for Fortran (ttb, https://github.com/adtzlr/ttb) with a comprehensive documentation (https://adtzlr.github.io/ttb/) that enables you to use tensors and tensor operations. Regarding the installation of the toolbox I hand you over to the capable hands of Andreas outlining the steps here https://adtzlr.github.io/ttb/installation.html.
-You can find a more advanced example in the ttb documentation specific for LS-Dyna.
+You can find a more advanced example in the ttb documentation specific for LS-Dyna (currently e.g. at: ["LS-Dyna Tensor Neo-Hooke"](https://github.com/jfriedlein/ttb/blob/example_LSDYNA/docs/example_neohooke-LSDYNA.md).
 
-@todo Add the link when the example is added.
-
-Refer to some more example files (elasto-plasticity, ...)
+@todo Add the link when the example is added. Refer to some more example files (elasto-plasticity, ...)
 
 ## Outline of the interface for umat and utan
 The following figure shows the typically relevant input/output arguments.
@@ -223,7 +217,7 @@ Here, the index `l` denotes the values from the current iteration and `n` the va
 
 <img src="https://github.com/jfriedlein/usrmat_LS-Dyna_Fortran/blob/master/images/general%20solution%20method.png" width="500">
 
-So let's move on. Secondly, we receive the stresses `sig` that contain the Cauchy stress from the last converged load step `n`. The history variables, such as the plastic strain or the hardening for plasticity, are summarised in the list `hsv`. Material parameters, like the Young's modulus or Poisson's ratio, set in the material card, are stored in the list `cm`. Lastly, we can also find the deformation gradient `F` after setting the option `IHYPER` in the history.
+So let's move on. Secondly, we receive the stresses `sig` that contain the Cauchy stress from the last converged load step `n`. The history variables, such as the plastic strain or the hardening for plasticity, are summarised in the list `hsv`. Material parameters, like the Young's modulus or Poisson's ratio, set in the material card, are stored in the list `cm`. For the above example the first and second Lame parameters are stored in P1 and P2, respectively. Lastly, we can also find the deformation gradient `F` after setting the option `IHYPER` in the history.
 
 Now the material model must compute the new Cauchy stress with index `tmp` and update the history variables.
 
@@ -234,6 +228,17 @@ In the UTAN-routine we receive the temporary Cauchy stress and history from UMAT
 * reconstruct data from inputs
 * store `es` in hsv
 
+## Example material card
+All of the above was done without even considering LS-Dyna or its pre-/postprocessing (here done via LS-PrePost). In order to apply the material model to a simulation, you need to setup a parameter for the keyword file. First, create a parameter `*MAT_USER_DEFINED_MATERIAL_MODELS` to refer to your user material. The material id in the option "MT" must equal the id in umatXX and utanXX. The value of "NHV" sets the number of used history variables, here (for elasticity) none are used in the material model. The option "IHYPER=1" stores the deformation gradient in the history "hsv" on top of the defined "NHV". The parameters "P1" and "P2" contain the Young's modulus in "cm(1)" and the Poisson ratio in "cm(2)", respectively.
+
+<img src="https://github.com/jfriedlein/usrmat_LS-Dyna_Fortran/blob/master/images/LSDYNA%20-%20material-card%20example.png" width="500">
+
+## References/Further reading
+Now you are well advised to check out some other resources on this topic, such as:
+* LS-Dyna user manual Vol. I, Appendix A "User Defined Materials" [LSTC Download Manuals](http://lstc.com/download/manuals)
+* ["How To - user defined material models with LS-Dyna on Windows"](https://www.researchgate.net/publication/327623424_How_To_-_user_defined_material_models_with_LS-Dyna_on_Windows) by Leon Kellner
+* ["An Overview of  User Defined Interfaces in LS-DYNA"](https://www.dynamore.de/de/download/papers/forum10/papers/L-I-01.pdf) by Tobias Erhart
+* ["UMAT Workshop by Nader Abedrabbo"](https://sites.google.com/site/aenader/umat-workshop)
 
 ## todo
 * Check dyn21 etc. files in older versions
