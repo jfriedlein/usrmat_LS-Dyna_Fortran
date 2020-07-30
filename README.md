@@ -3,8 +3,10 @@ Basics to implement user-defined materials (usrmat, umat, utan) in LS-Dyna with 
 
 ## Requirements and suggestions
 * An object version of the LS-Dyna version you wish to use. Everything outlined here refers to version R11.1. Their might be slight differences compared to older version, e.g. where to find the files. The object version is a compressed package (e.g. .zip) typically ending with `_lib.zip`. You can acquire this package from your LSTC support or, in case you possess the login credentials for the `ftp.lstc.com` download side section 'objects' (not 'user'), you can download the version from `https://ftp.lstc.com/objects/pc-dyna/` where all available version are listed (e.g. the here used 'ls-dyna_smp_d_R11_1_0_139588_winx64_ifort2017vs2017_lib.zip').
-* For the coding you could use any text editor, however we recommend: Visual Studio 2017
-* Fortran compiler: Intel Parallel Studio XE 2017
+
+For the coding:
+* You could use any text editor, however we recommend: Visual Studio 2017
+* For the compilation of the Fortran `.f/.F` files you need a Fortran compiler, e.g. Intel Parallel Studio XE 2017
 
 @todo Add an open source option (e.g. gfortran?, Notepad (Syntax: Fortran with fixed format))
 
@@ -199,8 +201,8 @@ c
 ```
 
 ## Material models using tensors
-In case you like the above equations in Tensor notation and you are not familiar with the in LS-Dyna usual Voigt notation. There is a superb Tensor Toolbox for Fortran (ttb, https://github.com/adtzlr/ttb) with a comprehensive documentation (https://adtzlr.github.io/ttb/) that enables you to use tensors and tensor operations. Regarding the installation of the toolbox I hand you over to the capable hands of Andreas outlining the steps here https://adtzlr.github.io/ttb/installation.html.
-You can find a more advanced example in the ttb documentation specific for LS-Dyna (currently e.g. at: ["LS-Dyna Tensor Neo-Hooke"](https://github.com/jfriedlein/ttb/blob/example_LSDYNA/docs/example_neohooke-LSDYNA.md).
+In case you like the above equations in Tensor notation and you are not familiar with the in LS-Dyna usual Voigt notation. There is a superb Tensor Toolbox for Fortran (ttb, https://github.com/adtzlr/ttb) with a comprehensive documentation (https://adtzlr.github.io/ttb/) that enables you to use tensors and tensor operations. Regarding the setup of the toolbox, I hand you over to the capable hands of Andreas outlining the steps here https://adtzlr.github.io/ttb/installation.html.
+You can find a more advanced example in the ttb documentation specific for LS-Dyna (currently e.g. at: ["LS-Dyna Tensor Neo-Hooke"](https://github.com/jfriedlein/ttb/blob/example_LSDYNA/docs/example_neohooke-LSDYNA.md)).
 
 @todo Add the link when the example is added. Refer to some more example files (elasto-plasticity, ...)
 
@@ -224,12 +226,18 @@ Now the material model must compute the new Cauchy stress with index `tmp` and u
 In the UTAN-routine we receive the temporary Cauchy stress and history from UMAT. With this we have to compute the tangent. In the world of tensors the latter needs to be the fourth order Eulerian tangent moduli `E`.
 
 ## Some considerations on the split of material model (umat) and tangent (utan)
-* Compute constant tangent in utan
-* reconstruct data from inputs
-* store `es` in hsv
+Unfornuately, because LS-Dyna was born "explicitly" (but contains full implicit capabilites, see  ["LS-Dyna solvers"](https://github.com/jfriedlein/usrmat_LS-Dyna_Fortran/issues/1#issuecomment-642446156)) the material model routine `umat` (stress and history update) and the tangent `utan` (for implicit only) are located in separate subroutines and files. Hence, at first glance it is not straightforward to generate a complicated consistent tangent lacking access and knowledge on quantities computed in the umat routine. As an example, for elasto-plasticity you determine inside the umat routine whether the current step is elastic and plastic and compute the stress accordingly. Obviously, the tangent in utan needs to set up such that it fits to the chosen elastic or plastic response. But the deciding criterion (here the yield criterion) or quantity (plastic multiplier) is not available in utan (and cumbersome to salvage).
+
+So, what options do we have to work around this issue/complication. I came up with the following variants (if there are alternatives please let me know):
+* Compute a constant tangent in utan: For completeness this option is also added here. Of course, if your tangent is constant and independent of the strains/history/... (as in the above small strain elasticity), you can simply implement it as it is.
+* Reconstruct data from inputs: Sometimes it is possible to simply reconstruct the data needed for tangent from the standard input arguments (strain increment, stress, deformation gradient). This was done for a Neo-Hookean material model (currently available here: ["LS-Dyna Tensor Neo-Hooke"](https://github.com/jfriedlein/ttb/blob/example_LSDYNA/docs/example_neohooke-LSDYNA.md)), where the tangent depends only on the deformation gradient, which is input in the list `hsv` also for the tangent (see section `interfaces`).
+* Save minimum set of auxiliary quantities in hsv: Another option is to store only the variables that you need for the reconstruction of the tangent in the history `hsv`. For instance, for the above briefly stated elasto-plastic model, the plastic multiplier would be sufficient to generate the tangent (decide elastic/plastic and compute consistent tangent). However, be aware that you might apply some tricks to get all quantities you usually need for the tangent. For example, for a consistent elastoplatic tangent we need the elastic trial stress, which in umat is computed based on the input stress `sig` (stress from last converged load step `n`). However, in utan the input argument `sig` contains the updated stress (index `tmp` in section `interfaces`). So, you would have to salvage the trial stress from the new stress (opposite sign). An example can be found here [utan for elasto-plasticity using the plastic multiplier](https://github.com/jfriedlein/usrmat_LS-Dyna_Fortran/blob/master/Elastoplasticity%20-%20linear%20-%20Tensor/UTAN%20-%20Elastoplasticity%20-%20linear%20-%20Tensor.f).
+* Store the entire 6x6 tangent matrix `es` in hsv:  This option is sometimes my last resort, especially when the computation of the tangent is absurdly complicated, expensive and practically impossibly to reconstruct. Here, we compute the tangent inside the umat routine (as one might be used to) and save its 6x6 matrix representation as 36 entries in the history list `hsv`. When the utan routine is called by LS-Dyna, we simply retrieve the 36 entries and return them properly arranged in the `es` tangent matrix. Yes, this approach is a bit heavy on memory, but still works quite well. To avoid mixing up the history variables in the hsv list, in particular if you save several actual history variables in hsv besides the tangent and the derformation gradient, you can use this ("hsv-manager"](https://github.com/jfriedlein/history_hsv-manager_LS-Dyna). This allows you to manage the entire history from a single central position and just call for what you want without caring about its storage location.
+
+@todo add an example of the "es in hsv" approch and the boilerplate code for utan
 
 ## Example material card
-All of the above was done without even considering LS-Dyna or its pre-/postprocessing (here done via LS-PrePost). In order to apply the material model to a simulation, you need to setup a parameter for the keyword file. First, create a parameter `*MAT_USER_DEFINED_MATERIAL_MODELS` to refer to your user material. The material id in the option "MT" must equal the id in umatXX and utanXX. The value of "NHV" sets the number of used history variables, here (for elasticity) none are used in the material model. The option "IHYPER=1" stores the deformation gradient in the history "hsv" on top of the defined "NHV". The parameters "P1" and "P2" contain the Young's modulus in "cm(1)" and the Poisson ratio in "cm(2)", respectively.
+All of the above was done without even considering LS-Dyna or its pre-/postprocessing (here done via LS-PrePost). In order to apply the material model to a simulation, you need to setup a parameter for the keyword file. First, create a parameter `*MAT_USER_DEFINED_MATERIAL_MODELS` to refer to your user material. The material id in the option "MT" must equal the id in umatXX and utanXX. The value of "NHV" sets the number of used history variables, here (for elasticity) none are used in the material model. The option "IHYPER=1" stores the deformation gradient in the history "hsv" on top of the defined "NHV". The parameters "P1" and "P2", for instance, contain the Young's modulus in "cm(1)" and the Poisson ratio in "cm(2)" in the picture, respectively. For our above elasticity material, we would type the values of the first and second Lame parameters into P1 and P2, respectively.
 
 <img src="https://github.com/jfriedlein/usrmat_LS-Dyna_Fortran/blob/master/images/LSDYNA%20-%20material-card%20example.png" width="500">
 
@@ -242,5 +250,5 @@ Now you are well advised to check out some other resources on this topic, such a
 
 ## todo
 * Check dyn21 etc. files in older versions
-* Check LS-Dyna 2D (plane strain) format of eps and sig
+* Check LS-Dyna 2D (plane strain) format of eps and sig (axial-symmetry is 6 and 6 as in 3D)
 
