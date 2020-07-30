@@ -200,7 +200,7 @@ To check the correctness of the umat (first ignoring the utan), you can use an e
 
 <img src="https://github.com/jfriedlein/usrmat_LS-Dyna_Fortran/blob/master/images/CONTROL_IMPLICIT_SOLUTION%20-%20Einstellungen.png" width="500">
 
-More details on the setup of these simulations will be given here in the future.
+More details on the setup of these simulations will be given here in the future (small appetiser: [Numerical example for LS-Dyna"](https://github.com/jfriedlein/Numerical_examples_in_LS-Dyna)).
 
 @todo maybe add one-element test, explain the settings and finish this section before the airport
 
