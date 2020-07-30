@@ -216,6 +216,8 @@ The following figure shows the typically relevant input/output arguments.
 
 <img src="https://github.com/jfriedlein/usrmat_LS-Dyna_Fortran/blob/master/images/UMAT_UTAN%20-%20arguments.png" width="500">
 
+@todo Check if the tangent es can also be used as an input in utan (e.g. computing an incremental tangent, sounds like bs, right?)
+
 The UMAT-subroutine gets the incremental strain `eps`
 
 <a href="https://www.codecogs.com/eqnedit.php?latex=\Delta&space;\boldsymbol{\varepsilon}_\ell&space;=&space;\boldsymbol{\varepsilon}_\ell&space;-&space;\boldsymbol{\varepsilon}_n" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\Delta&space;\boldsymbol{\varepsilon}_\ell&space;=&space;\boldsymbol{\varepsilon}_\ell&space;-&space;\boldsymbol{\varepsilon}_n" title="\Delta \boldsymbol{\varepsilon}_\ell = \boldsymbol{\varepsilon}_\ell - \boldsymbol{\varepsilon}_n" /></a>
