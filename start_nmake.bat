@@ -1,0 +1,3 @@
+REM We start the command window and the Intel compiler by doing some standard commands (copied from the call to Intel Compiler)
+REM Moreover, we change the current directory to where our source files and nmake.exe is located.
+start C:\Windows\System32\cmd.exe /E:ON /V:ON /K ""C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2017.6.270\windows\bin\ipsxe-comp-vars.bat" intel64 vs2017 & cd ../../../.. & D: & cd "D:\LS-Dyna object version\ls-dyna_smp_d_R11_1_0_lib" "
