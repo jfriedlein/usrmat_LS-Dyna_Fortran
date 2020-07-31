@@ -34,9 +34,7 @@ To check whether everything works as desired, we simply compile the original LS-
 @todo Check whether there is indeed a noticable performance loss by using the self-compiled exe.
 
 9. Now we can start implementing our own material models into the files of the working directory and compile and run it using the above steps.
-10. For some reason, when calling nmake, even when you changed the Fortran files, the message `'lsdyna.exe' is up-to-date` is shown and the files aren't compiled. As a simple workaround, just delete the lsdyna.exe everytime before you call nmake.
-
-@todo Find a workaround or add a simple batch script, deleting lsdyna.exe and calling nmake.
+10. For some reason, when calling nmake, even when you changed the Fortran files, the message `'lsdyna.exe' is up-to-date` is shown and the files aren't compiled. As a simple workaround, just delete the lsdyna.exe everytime before you call nmake. This can be accomplished using the "start_nmake.bat" available in this repository. First, you should enter the paths to your working directory (where source files, nmake is) inside the batch file for your paths. Then just execute the .bat file and enter "del lsdyna.exe & nmake", which deletes the possibly already existing lsdyna.exe and execute nmake to create a new lsdyna.exe.
 
 ## Implementation
 Before we take a closer look at the files that need to be extended by our material models and how we do this. A few notes on the used programming language FORTRAN.
