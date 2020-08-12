@@ -73,6 +73,8 @@ Here, the dots that follow the integer, mark them as floating point numbers and 
 
 because you never know when you might change your mind and rewrite parts of equations using a divison.
 
+Some more basics on Fortran (and Abaqus user interfaces) can be found in this [PDF](https://github.com/jfriedlein/usrmat_LS-Dyna_Fortran/blob/master/Further%20documents/EN234FEA_tutorial_2017%20with%20Fortran%20phrase-book.pdf) by the Brown University.
+
 ## Our first user material
 1. Open your working directory (the folder with the unpacked object version, e.g. `ls-dyna_smp_d_R11_1_0_139588_winx64_ifort2017vs2017_lib`) in Visual Studio.
 2. Implement your material model code (computation of stress, history variables ...), in the file `dyn21umats.F`, for instance linear elasticity. We code our model in the first unused umat, here umat43. Note that we right away start with tensor based models.
