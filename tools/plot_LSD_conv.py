@@ -1,22 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Spyder Editor
-
-This is a temporary script file.
-"""
-
-import matplotlib.pyplot as plt
-import numpy
-from math import log,exp
-
-# Some specs of the messag file
-trigger_phrase = 'Iteration   1:'
-first_it_counter = 1
-continue_phrase = 'Iteration'
-pos_of_residuum = 22
-length_of_residuum_word = 7
-max_y = 1 # maximum for displacement norm residuum
-min_y = 1e-6 # for a log-plot the ylimit cannot be zero
+#!/usr/bin/env python3
 
 try:
     from IPython import get_ipython
@@ -24,6 +6,20 @@ try:
     get_ipython().magic('reset -f')
 except:
     pass
+
+import matplotlib.pyplot as plt
+import numpy
+from math import log,exp
+
+# Some specs of the messag file
+trigger_phrase = 'Iteration:   1'
+first_it_counter = 1
+continue_phrase = 'Iteration:'
+pos_of_residuum = 33
+length_of_residuum_word = 13
+max_y = 1 # maximum for displacement norm residuum
+min_y = 1e-6 # for a log-plot the ylimit cannot be zero
+
 
 # init
 plt.clf()   # clear the plot, needed in a new session
@@ -77,3 +73,5 @@ plt.ylabel('residuum |du|/|u|')
 plt.axis([min_x, 1.1*max_x, 1.1*min_y, 1.1*max_y])
 
 plt.show()
+
+sec = input('Press a key to end the program\n')
