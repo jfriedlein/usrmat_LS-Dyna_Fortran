@@ -22,15 +22,9 @@ To check whether everything works as desired, we simply compile the original LS-
 4. Run the command `nmake` (Starts the nmake.exe) to compile the Fortran files and create the `lsdyna.exe`
 5. Wait a bit until all files are compiled. When you run nmake for the first time, it usually takes a bit longer, because every file is compiled. Later on, when you implement material models, you typically only change two files, hence nmake only recompiles those two, which is much faster.
 
-> **note**
->
-> However, this also means that changes in external files, e.g. libraries or outsourced codes, are not automatically detected and need to be compiled manually. The latter can be achieved by simply messing up the path in the include command, calling nmake, correcting the wrong path and calling nmake again. Now this include file is also recompiled.
-
-**@todo** Find a better and automated way to avoid this silly approach.
-
 6. After the compilation finished successfully, you should have a file `lsdyna.exe` in your working directory. This standalone executable contains LS-Dyna together with your material models.
 
-@todo Test possible issues when passing the "standalone" exe around.
+**@todo** Test possible issues when passing the "standalone" exe around.
 
 7. Start an LS-Dyna simulation, for instance from LS-Run, where you choose the created `lsdyna.exe` as the executable (e.g. instead of `[...]/ls-dyna_smp_d_R11.1_winx64_ifort160.exe` you choose `{working directory}/lsdyna.exe`).
 8. The simulation should run just the same as using the LSTC version 'ls-dyna_smp_d_R11.1_winx64_ifort160.exe`.
@@ -81,7 +75,7 @@ Some more basics on Fortran (and Abaqus user interfaces) can be found in this [P
 
 ## Our first user material
 1. Open your working directory (the folder with the unpacked object version, e.g. `ls-dyna_smp_d_R11_1_0_139588_winx64_ifort2017vs2017_lib`) in Visual Studio.
-2. Implement your material model code (computation of stress, history variables ...) in the file `dyn21umats.F` (here 'umats' stands for umat-scalar), for instance linear elasticity. We code our model in the first unused umat, here it's umat43. Note that we right away start with tensor based models, as noted below.
+2. Implement your material model code (computation of stress, history variables ...) in the file `dyn21umats.F` (here 'umats' stands for umat-scalar), for instance linear elasticity. We code our model in the first unused umat, here it's umat43. Note that we right away start with tensor based models, as noted below, which require the ttb files under the path `ttb/...` in the working directory.
 
 [dyn21umats.F]:
 ```fortran
@@ -257,6 +251,18 @@ So, what options do we have to work around this issue/complication? I came up wi
 All of the above was done without even considering LS-Dyna or its pre-/postprocessing (here done via LS-PrePost). In order to apply the material model to a simulation, you need to set up a card for the keyword file. First, create a card `*MAT_USER_DEFINED_MATERIAL_MODELS` to refer to your user material. The material id in the option "MT" must equal the id in umatXX and utanXX (above it was 43). The value of "NHV" sets the number of used history variables, here (for elasticity) none are used in the material model. The option "IHYPER=1" stores the deformation gradient in the history "hsv" on top of the defined "NHV" (is not necessary for the above small strain elasticity). The parameters "P1" and "P2", for instance, contain the Young's modulus in "cm(1)" and the Poisson ratio in "cm(2)" in the picture, respectively. For our above elasticity material, we would type the values of the first and second Lame parameters into P1 and P2.
 
 <img src="https://github.com/jfriedlein/usrmat_LS-Dyna_Fortran/blob/master/images/LSDYNA%20-%20material-card%20example.png" width="500">
+
+## Code design
+* Outsource umat into separate file: Shown by Nader Abedrabbo here https://sites.google.com/site/aenader/umat-workshop/umat-implement together with the necessary makefile.
+* Split the code into multiple files
+
+> **note**
+>
+> However, this also means that changes in external files, e.g. libraries or outsourced codes, are not automatically detected and need to be compiled manually. The latter can be achieved by simply messing up the path in the include command, calling nmake, correcting the wrong path and calling nmake again. Now this include file is also recompiled.
+
+**@todo** Find a better and automated way to avoid this silly approach.
+**@todo** Check the makefile modifications to compile outsourced/external fortran files
+
 
 ## References/Further reading
 Now you are well advised to check out some other resources on this topic, such as:
