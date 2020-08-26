@@ -5,7 +5,7 @@ Basics to implement user-defined materials (usrmat, umat, utan) in LS-Dyna with 
 LS-Dyna offers the interfaces and solvers to, among many other things, simulate mechanical systems and the related material behaviour. To reproduce realistic material responses, we need to utilise adequate material models. In case, standard available models cannot generate valid results, new user-defined material models can be implemented. The latter typically requires a stress-strain routine (umat, computes the stress for a given strain) and for implicit analyses also the stress-strain tangent (utan, how the strain changes the stress). This guide introduces the basics to implement user-defined material models in LS-Dyna using the standard Fortran interface.
 
 ## Software requirements and suggestions
-To implement, compile and apply UMAT-routines we recommend the following software and tools:
+To implement and apply UMAT-routines we recommend the following software and tools:
 * An object version of the LS-Dyna version you wish to use. Everything outlined here refers to version R11.1. Their might be slight differences compared to older version, e.g. where to find the files. The object version is a compressed package (e.g. .zip) typically ending with `_lib.zip`. You can acquire this package from your LSTC support or, in case you possess the login credentials for the `ftp.lstc.com` download side section 'objects' (not 'user'), you can download the version from `https://ftp.lstc.com/objects/pc-dyna/` where all available version are listed (e.g. the here used 'ls-dyna_smp_d_R11_1_0_139588_winx64_ifort2017vs2017_lib.zip').
 
 For the coding:
