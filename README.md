@@ -207,6 +207,8 @@ To check the correctness of the umat (first ignoring the utan), you can use an e
 
 <img src="https://github.com/jfriedlein/usrmat_LS-Dyna_Fortran/blob/master/images/CONTROL_IMPLICIT_SOLUTION%20-%20Einstellungen.png" width="500">
 
+When you check the resulting convergence rate (to verify your tangent), you might be surprised that you hardly see quadratic convergence, especially for standard tests with distortion or shear and for every practical example. The culprit here seems to be the LS-Dyna element formulation. From a first glance, you might think that ELFORM=2 is similar to a normal linear Q1 element. It is NOT! LS-Dyna often uses (some kind of) selective reduced integration (SRI, S/R), however in such a way that I cannot understand how the formulation shall be consistent, because they seem to use some averaging. Hence, the convergence rate only approaches 2 for simple undistorted element tests under pure tension (so no shear). Without going into more details here, you might see the approaching dilemma of no decent convergence. **work in progress**
+
 More details on the setup of these simulations will be given here in the future (small appetiser: ["Numerical examples for LS-Dyna"](https://github.com/jfriedlein/Numerical_examples_in_LS-Dyna)).
 
 **@todo** maybe add one-element test, explain the settings and finish this section before the airport
