@@ -207,7 +207,7 @@ To check the correctness of the umat (first ignoring the utan), you can use an e
 
 <img src="https://github.com/jfriedlein/usrmat_LS-Dyna_Fortran/blob/master/images/CONTROL_IMPLICIT_SOLUTION%20-%20Einstellungen.png" width="500">
 
-More details on the setup of these simulations will be given here in the future (small appetiser: [Numerical examples for LS-Dyna"](https://github.com/jfriedlein/Numerical_examples_in_LS-Dyna)).
+More details on the setup of these simulations will be given here in the future (small appetiser: ["Numerical examples for LS-Dyna"](https://github.com/jfriedlein/Numerical_examples_in_LS-Dyna)).
 
 **@todo** maybe add one-element test, explain the settings and finish this section before the airport
 
@@ -234,7 +234,7 @@ Here, the index `l` denotes the values from the current iteration and `n` the va
 
 <img src="https://github.com/jfriedlein/usrmat_LS-Dyna_Fortran/blob/master/images/general%20solution%20method.png" width="500">
 
-Secondly, we receive the stresses `sig` that contain the Cauchy stress from the last converged load step `n`. The history variables, such as the plastic strain or the hardening for plasticity, are summarised in the list `hsv`. Material parameters, like the Young's modulus or Poisson's ratio, set in the material card, are stored in the list `cm`. For the above example the first and second Lame parameters are stored in P1 and P2, respectively. To avoid mixing up the material parameters, you can use the [material parameter manager]("https://github.com/jfriedlein/material-parameter_manager_LS-Dyna"). Lastly, we can also find the deformation gradient `F` in the history array after setting the option `IHYPER` in the material card (see section 'material card').
+Secondly, we receive the stresses `sig` that contain the Cauchy stress from the last converged load step `n`. The history variables, such as the plastic strain or the hardening for plasticity, are summarised in the list `hsv`. Material parameters, like the Young's modulus or Poisson's ratio, set in the material card, are stored in the list `cm`. For the above example the first and second Lame parameters are stored in P1 and P2, respectively. To avoid mixing up the material parameters, you can use the ["material parameter manager"](https://github.com/jfriedlein/material-parameter_manager_LS-Dyna). Lastly, we can also find the deformation gradient `F` in the history array after setting the option `IHYPER` in the material card (see section 'material card').
 
 Now the material model must compute the new Cauchy stress (index `tmp` above) and update the history variables.
 
