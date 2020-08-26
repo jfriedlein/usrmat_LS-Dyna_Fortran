@@ -1,14 +1,18 @@
 # usrmat_LS-Dyna_Fortran
 Basics to implement user-defined materials (usrmat, umat, utan) in LS-Dyna with Fortran
 
-## Requirements and suggestions
+## What is this all about?
+LS-Dyna offers the interfaces and solvers to, among many other things, simulate mechanical systems and the related material behaviour. To reproduce realistic material responses, we need to utilise adequate material models. In case, standard available models cannot generate valid results, new user-defined material models can be implemented. The latter typically requires a stress-strain routine (umat, computes the stress for a given strain) and for implicit analyses also the stress-strain tangent (utan, how the strain changes the stress). This guide introduces the basics to implement user-defined material models in LS-Dyna using the standard Fortran interface.
+
+## Software requirements and suggestions
+To implement, compile and apply UMAT-routines we recommend the following software and tools:
 * An object version of the LS-Dyna version you wish to use. Everything outlined here refers to version R11.1. Their might be slight differences compared to older version, e.g. where to find the files. The object version is a compressed package (e.g. .zip) typically ending with `_lib.zip`. You can acquire this package from your LSTC support or, in case you possess the login credentials for the `ftp.lstc.com` download side section 'objects' (not 'user'), you can download the version from `https://ftp.lstc.com/objects/pc-dyna/` where all available version are listed (e.g. the here used 'ls-dyna_smp_d_R11_1_0_139588_winx64_ifort2017vs2017_lib.zip').
 
 For the coding:
-* You could use any text editor, however we recommend: Visual Studio 2017 (+ plugin [Word highlight with margin](https://marketplace.visualstudio.com/items?itemName=TrungKienPhan.WordHighlight-18439))
+* You could use any text editor, however we recommend: Visual Studio 2017 (+ plugin [Word highlight with margin](https://marketplace.visualstudio.com/items?itemName=TrungKienPhan.WordHighlight-18439) to keep a clear head in the existing code)
 * For the compilation of the Fortran `.f/.F` files you need a Fortran compiler, e.g. Intel Parallel Studio XE 2017
 
-@todo Add an open source option (e.g. gfortran?, Notepad (Syntax: Fortran with fixed format))
+**@todo** Add an open source option (e.g. gfortran?, Notepad (Syntax: "Fortran with fixed format"))
 
 ## Test setup and compiler
 To check whether everything works as desired, we simply compile the original LS-Dyna object files.
@@ -20,9 +24,9 @@ To check whether everything works as desired, we simply compile the original LS-
 
 > **note**
 >
-> However, this also means that changes in external files, e.g. libraries or outsourced codes, are not automatically detected and need to be compiled manually. The latter can achieved by simply messing the path in the include command up, call nmake, correct the wrong path and call nmake again. Now this include file is recompiled.
+> However, this also means that changes in external files, e.g. libraries or outsourced codes, are not automatically detected and need to be compiled manually. The latter can be achieved by simply messing up the path in the include command, calling nmake, correcting the wrong path and calling nmake again. Now this include file is also recompiled.
 
-@todo Find a better and automated way to avoid this silly approach.
+**@todo** Find a better and automated way to avoid this silly approach.
 
 6. After the compilation finished successfully, you should have a file `lsdyna.exe` in your working directory. This standalone executable contains LS-Dyna together with your material models.
 
