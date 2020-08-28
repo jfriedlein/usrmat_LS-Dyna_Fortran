@@ -270,6 +270,7 @@ Now you are well advised to check out some other resources on this topic, such a
 * ["How To - user defined material models with LS-Dyna on Windows"](https://www.researchgate.net/publication/327623424_How_To_-_user_defined_material_models_with_LS-Dyna_on_Windows) by Leon Kellner
 * ["An Overview of  User Defined Interfaces in LS-DYNA"](https://www.dynamore.de/de/download/papers/forum10/papers/L-I-01.pdf) by Tobias Erhart
 * ["UMAT Workshop by Nader Abedrabbo"](https://sites.google.com/site/aenader/umat-workshop)
+* ["Papers on LS-Dyna/-implementations"](https://www.dynalook.com/search?SearchableText=umat) (in case something specific suits you)
 
 ## todo
 * Check dyn21 etc. files in older versions
