@@ -71,6 +71,8 @@ Here, the dots that follow the integer, mark them as floating point numbers and 
 
 because you never know when you might change your mind and rewrite parts of equations using a divison.
 
+* In Fortran there is no difference between upper and lower case. So, a variable named 'norm' can also be accessed as 'NORM' or 'norM' etc. Just be aware that you cannot use variable names that only differ in the capitalisation, e.g. spatial/material in index notation 'j' and 'J' would denote the same variable in Fortran.
+
 Some more basics on Fortran (and Abaqus user interfaces) can be found in this [PDF](https://github.com/jfriedlein/usrmat_LS-Dyna_Fortran/blob/master/Further%20documents/EN234FEA_tutorial_2017%20with%20Fortran%20phrase-book.pdf) by the Brown University.
 
 ## Our first user material
@@ -225,6 +227,14 @@ The following figure shows the typically relevant input/output arguments.
 The UMAT-subroutine gets the incremental strain `eps` in Voigt (!) notation. Hence, the shear components contain twice the xy, yz and zx components (all automatically handled by the ttb tensor toolbox).
 
 <a href="https://www.codecogs.com/eqnedit.php?latex=\Delta&space;\boldsymbol{\varepsilon}_\ell&space;=&space;\boldsymbol{\varepsilon}_\ell&space;-&space;\boldsymbol{\varepsilon}_n" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\Delta&space;\boldsymbol{\varepsilon}_\ell&space;=&space;\boldsymbol{\varepsilon}_\ell&space;-&space;\boldsymbol{\varepsilon}_n" title="\Delta \boldsymbol{\varepsilon}_\ell = \boldsymbol{\varepsilon}_\ell - \boldsymbol{\varepsilon}_n" /></a>
+
+However, because the input strain is an incremental strain, the typical tensor based models often need to be adapted, cause they are typically based on the total strain tensor. If you want to avoid this, you can set "IHYPER=1" (see below on material cards) and use the deformation gradient to compute the total strain as
+
+<a href="https://www.codecogs.com/eqnedit.php?latex=\boldsymbol{\varepsilon}&space;=&space;symmetrize(\boldsymbol{F})&space;-&space;\boldsymbol{I}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\boldsymbol{\varepsilon}&space;=&space;symmetrize(\boldsymbol{F})&space;-&space;\boldsymbol{I}" title="\boldsymbol{\varepsilon} = symmetrize(\boldsymbol{F}) - \boldsymbol{I}" /></a>
+
+The "symmetrize" function is available in the tensor toolbox extension package ttbXkinematics (currently not available online)
+
+**@todo** Upload the ttbXkinematics package
 
 Here, the index `l` denotes the values from the current iteration and `n` the values from the last converged load step. Some background information and context regarding the herein used notation can be found in the following scheme, before we move on.
 
