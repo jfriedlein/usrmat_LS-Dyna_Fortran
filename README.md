@@ -6,11 +6,11 @@ LS-Dyna offers the interfaces and solvers to, among many other things, simulate 
 
 ## Software requirements and suggestions
 To implement and apply UMAT-routines we recommend the following software and tools:
-* An object version of the LS-Dyna version you wish to use. Everything outlined here refers to version R11.1. Their might be slight differences compared to older version, e.g. where to find the files. The object version is a compressed package (e.g. .zip) typically ending with `_lib.zip`. You can acquire this package from your LSTC support or, in case you possess the login credentials for the `ftp.lstc.com` download side section 'objects' (not 'user'), you can download the version from `https://ftp.lstc.com/objects/pc-dyna/` where all available version are listed (e.g. the here used 'ls-dyna_smp_d_R11_1_0_139588_winx64_ifort2017vs2017_lib.zip').
+* An object version of the LS-Dyna version you wish to use. Everything outlined here refers to version R11.1. Their might be slight differences compared to older version, e.g. where to find the files (see final section). The object version is a compressed package (e.g. .zip) typically ending with `_lib.zip`. You can acquire this package from your LSTC support or, in case you possess the login credentials for the `ftp.lstc.com` download side section 'objects' (not 'user'), you can download the version from `https://ftp.lstc.com/objects/pc-dyna/` where all available version are listed (e.g. the here used 'ls-dyna_smp_d_R11_1_0_139588_winx64_ifort2017vs2017_lib.zip').
 
 For the coding:
 * You could use any text editor, however we recommend: Visual Studio 2017 (+ plugin [Word highlight with margin](https://marketplace.visualstudio.com/items?itemName=TrungKienPhan.WordHighlight-18439) to keep a clear head in the existing code)
-* For the compilation of the Fortran `.f/.F` files you need a Fortran compiler, e.g. Intel Parallel Studio XE 2017
+* For the compilation of the Fortran `.f/.F` files you need a Fortran compiler, e.g. Intel Parallel Studio XE 2017. Be aware of the dependencies of the Fortran compiler and Visual Studio.
 
 **@todo** Add an open source option (e.g. gfortran?, Notepad (Syntax: "Fortran with fixed format"))
 
@@ -282,7 +282,9 @@ Now you are well advised to check out some other resources on this topic, such a
 * ["UMAT Workshop by Nader Abedrabbo"](https://sites.google.com/site/aenader/umat-workshop)
 * ["Papers on LS-Dyna/-implementations"](https://www.dynalook.com/search?SearchableText=umat) (in case something specific suits you)
 
+## Older LS-Dyna versions
+In R920 everything, so the umat and utan routines, etc. are cramped into the file `dyn21.F`, which achieves more than 10k lines. Besides that the subroutines are identical so you can implement the code just the same. However, you need a different software setup (Visual Studio, Fortran compiler) that fits to the downloaded LS-Dyna object version.
+
 ## todo
-* Check dyn21 etc. files in older versions
 * Check LS-Dyna 2D (plane strain) format of eps and sig (axial-symmetry is 6 and 6 as in 3D)
 
