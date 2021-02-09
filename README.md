@@ -7,12 +7,16 @@ LS-Dyna offers the interfaces and solvers to, among many other things, simulate 
 ## Software requirements and suggestions
 To implement and apply UMAT-routines we recommend the following software and tools:
 * An object version of the LS-Dyna version you wish to use. Everything outlined here refers to version R11.1. Their might be slight differences compared to older version, e.g. where to find the files (see final section). The object version is a compressed package (e.g. .zip) typically ending with `_lib.zip`. You can acquire this package from your LSTC support or, in case you possess the login credentials for the `ftp.lstc.com` download side section 'objects' (not 'user'), you can download the version from `https://ftp.lstc.com/objects/pc-dyna/` where all available version are listed (e.g. the here used 'ls-dyna_smp_d_R11_1_0_139588_winx64_ifort2017vs2017_lib.zip').
+* For mpp versions of LS-Dyna you also need some MPP tools, such as MSMPI.
+
+**@todo** Add more infos on MPI when it works for me
 
 For the coding:
-* You could use any text editor, however we recommend: Visual Studio 2017 (+ plugin [Word highlight with margin](https://marketplace.visualstudio.com/items?itemName=TrungKienPhan.WordHighlight-18439) to keep a clear head in the existing code)
-* For the compilation of the Fortran `.f/.F` files you need a Fortran compiler, e.g. Intel Parallel Studio XE 2017. Be aware of the dependencies of the Fortran compiler and Visual Studio.
+* Under Windows you typically need Visual Studio and the Intel Fortran Compiler. Check the `readme.txt` in the `_lib.zip`, which states the required versions for both. If you want to avoid trouble, adhere to the tools and version given in there. Especially older versions of LS-Dyna like R9/R10 require rather old Visual Studio and Intel Fortran versions, so make sure you can get access to these dusty rusty things.
+* You could use any text editor for the typing, however in relation to Intel Fortran we recommend (mandatory?): Visual Studio 2017 (+ plugin [Word highlight with margin](https://marketplace.visualstudio.com/items?itemName=TrungKienPhan.WordHighlight-18439) to keep a clear head in the existing code)
+* For the compilation of the Fortran `.f/.F` files you need a Fortran compiler, e.g. Intel Parallel Studio XE 2017. Be aware of the dependencies of the Fortran compiler and Visual Studio. As long as you stick with the versions in `readme.txt` you should be fine.
 
-**@todo** Add an open source option (e.g. gfortran?, Notepad (Syntax: "Fortran with fixed format"))
+**@todo** Add an open source option (e.g. gfortran?, Notepad (Syntax: "Fortran with fixed format")), check under Linux
 
 ## Test setup and compiler
 To check whether everything works as desired, we simply compile the original LS-Dyna object files.
@@ -231,6 +235,8 @@ The UMAT-subroutine gets the incremental strain `eps` in Voigt (!) notation. Hen
 However, because the input strain is an incremental strain, the typical tensor based models often need to be adapted, cause they are typically based on the total strain tensor. If you want to avoid this, you can set "IHYPER=1" (see below on material cards) and use the deformation gradient to compute the total strain as
 
 <a href="https://www.codecogs.com/eqnedit.php?latex=\boldsymbol{\varepsilon}&space;=&space;symmetrize(\boldsymbol{F})&space;-&space;\boldsymbol{I}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\boldsymbol{\varepsilon}&space;=&space;symmetrize(\boldsymbol{F})&space;-&space;\boldsymbol{I}" title="\boldsymbol{\varepsilon} = symmetrize(\boldsymbol{F}) - \boldsymbol{I}" /></a>
+
+**@todo** Here we need to add some more information on hypo and hyper formulations and Updated Lagrangian, geometric nonlinearity, etc.
 
 The "symmetrize" function is available in the tensor toolbox extension package ttbXkinematics (currently not available online)
 
