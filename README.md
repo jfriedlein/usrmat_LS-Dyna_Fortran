@@ -268,6 +268,8 @@ All of the above was done without even considering LS-Dyna or its pre-/postproce
 
 <img src="https://github.com/jfriedlein/usrmat_LS-Dyna_Fortran/blob/master/images/LSDYNA%20-%20material-card%20example.png" width="500">
 
+**@todo** Also give the remaining material cards, ideally a good set for proper implicit analysis. E.g. use ILIMIT=1 for full Newton-Raphson, use IGS=1 for a usable linearisation, ...
+
 ## Code design
 * Outsource umat into separate file: Shown by Nader Abedrabbo here https://sites.google.com/site/aenader/umat-workshop/umat-implement together with the necessary makefile.
 * Split the code into multiple files
