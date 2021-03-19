@@ -9,7 +9,8 @@ To implement and apply UMAT-routines we recommend the following software and too
 * An object version of the LS-Dyna version you wish to use. Everything outlined here refers to version R11.1. Their might be slight differences compared to older version, e.g. where to find the files (see final section). The object version is a compressed package (e.g. .zip) typically ending with `_lib.zip`. You can acquire this package from your LSTC support or, in case you possess the login credentials for the `ftp.lstc.com` download side section 'objects' (not 'user'), you can download the version from `https://ftp.lstc.com/objects/pc-dyna/` where all available version are listed (e.g. the here used 'ls-dyna_smp_d_R11_1_0_139588_winx64_ifort2017vs2017_lib.zip').
 * For mpp versions of LS-Dyna you also need some MPP tools, such as MSMPI.
 
-**@todo** Add more infos on MPI when it works for me
+**@todo** Add more infos on MPI (currently it only works for R>=10.2)
+Install MPI via "msmpisdk.msi" `https://www.researchgate.net/post/How_to_solve_LINK_fatal_error_LNK1181_cannot_open_input_file_msmpilib_during_Abaqus_and_fortran_linking`, so that the desired files 'msmpi.lib' and 'msmpifec.lib' are created. Then link them inside the `makefile`, for instance as `MPICH_LIB = /libpath:"C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x64" msmpi.lib msmpifec.lib` and `MPICH_INC_PATH = "C:\Program Files (x86)\Microsoft SDKs\MPI\Include"`.
 
 For the coding:
 * Under Windows you typically need Visual Studio and the Intel Fortran Compiler. Check the `readme.txt` in the `_lib.zip`, which states the required versions for both. If you want to avoid trouble, adhere to the tools and version given in there. Especially older versions of LS-Dyna like R9/R10 require rather old Visual Studio and Intel Fortran versions, so make sure you can get access to these dusty rusty things.
