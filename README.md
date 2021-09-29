@@ -271,6 +271,12 @@ All of the above was done without even considering LS-Dyna or its pre-/postproce
 
 **@todo** Also give the remaining material cards, ideally a good set for proper implicit analysis. E.g. use ILIMIT=1 for full Newton-Raphson, use IGS=1 for a usable linearisation, ...
 
+## validation
+Elasto-plasticity with linear isotropic hardening can be compared to MAT24. Just be aware that "ETAN" is not the linear hardening modulus "K", but the resulting stiffness ETAN=(E*K)/(E+K) with Young's modulus "E".
+
+## tricks
+Very nice Fortran features: http://www.netlib.org/ccm/page/api/optional.html
+
 ## Code design
 * Outsource umat into separate file: Shown by Nader Abedrabbo here https://sites.google.com/site/aenader/umat-workshop/umat-implement together with the necessary makefile.
 * Split the code into multiple files
@@ -282,6 +288,9 @@ All of the above was done without even considering LS-Dyna or its pre-/postproce
 **@todo** Find a better and automated way to avoid this silly approach.
 **@todo** Check the makefile modifications to compile outsourced/external fortran files
 
+## Hypo vs hyper
+strain increment (rate-type) vs deformation gradient
+**@todo**
 
 ## References/Further reading
 Now you are well advised to check out some other resources on this topic, such as:
