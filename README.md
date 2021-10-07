@@ -274,6 +274,15 @@ All of the above was done without even considering LS-Dyna or its pre-/postproce
 ## validation
 Elasto-plasticity with linear isotropic hardening can be compared to MAT24. Just be aware that "ETAN" is not the linear hardening modulus "K", but the resulting stiffness ETAN=(E*K)/(E+K) with Young's modulus "E".
 
+## Plane strain
+Looking for some plane strain examples?
+Here is how to use plane strain: https://ftp.lstc.com/anonymous/outgoing/support/FAQ/2d_general_condensed
+
+But: the deformation gradient that enters the material model appears to be utter BS for plane strain.
+@todo What happens for axisym? Transformation to "local material coordinate system" (https://ftp.lstc.com/anonymous/outgoing/support/FAQ/user_defined_materials.faq)
+
+The material models typically utilise the fully 3D state.
+
 ## tricks
 Very nice Fortran features: http://www.netlib.org/ccm/page/api/optional.html
 
