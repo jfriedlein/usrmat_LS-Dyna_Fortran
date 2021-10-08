@@ -82,7 +82,7 @@ Some more basics on Fortran (and Abaqus user interfaces) can be found in this [P
 
 ## Our first user material
 1. Open your working directory (the folder with the unpacked object version, e.g. `ls-dyna_smp_d_R11_1_0_139588_winx64_ifort2017vs2017_lib`) in Visual Studio.
-2. Implement your material model code (computation of stress, history variables ...) in the file `dyn21umats.F` (here 'umats' stands for umat-scalar), for instance linear elasticity. We code our model in the first unused umat, here it's umat43. Note that we right away start with tensor based models, as noted below, which require the ttb files under the path `ttb/...` in the working directory.
+2. Implement your material model code (computation of stress, history variables ...) in the file `dyn21umats.F` (here 'umats' stands for umat-scalar, change the file extension from '.f' to '.F' in case the "#define" and "#include" cause errors), for instance linear elasticity. We code our model in the first unused umat, here it's umat43. Note that we right away start with tensor based models, as noted below, which require the ttb files under the path `ttb/...` in the working directory.
 
 [dyn21umats.F]:
 ```fortran
@@ -286,6 +286,10 @@ The material models typically utilise the fully 3D state.
 ## tricks
 Very nice Fortran features: http://www.netlib.org/ccm/page/api/optional.html
 
+enumerators via "integer, parameter :: enum_a=1, enum_b=2"
+
+hsv and cm manager
+
 ## Code design
 * Outsource umat into separate file: Shown by Nader Abedrabbo here https://sites.google.com/site/aenader/umat-workshop/umat-implement together with the necessary makefile.
 * Split the code into multiple files
@@ -300,6 +304,22 @@ Very nice Fortran features: http://www.netlib.org/ccm/page/api/optional.html
 ## Hypo vs hyper
 strain increment (rate-type) vs deformation gradient
 **@todo**
+
+## Some notes on Linux
+get the AVX version "grep flags /proc/cpuinfo"
+
+redhat vs centos
+
+eclipse photran
+
+"0.5" vs "5.0d-1"
+**@todo** Let Andreas know that in file "libexp.f" line 55 "5.0d-1" is needed instead of 0.5 for Linux build
+
+problems with r4 disappear if ifort flag "-r8" is removed (this flag seems to set the default "kind" to 8), without this flag, the compiler generates no errors wrt the r4 variants
+
+"real(kind=8)" changed to "real"
+
+problems when changing "dyn21umats.f" to "dyn21umats.F", but problems with r4 variants did not occur, left as ".f" with removed _r4 variants in ttb to avoid "undefined reference to 'usermsg_'", etc.
 
 ## References/Further reading
 Now you are well advised to check out some other resources on this topic, such as:
