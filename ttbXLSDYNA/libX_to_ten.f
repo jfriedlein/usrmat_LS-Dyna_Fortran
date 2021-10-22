@@ -4,8 +4,8 @@ c Retrieve the stress tensor from the vectorization
         implicit none
         
         type(Tensor2) :: sigX_to_ten_2
-        real sig1_i, sig2_i, sig3_i, sig4_i, sig5_i, sig6_i
-        real sig(6)
+        real(kind=8) sig1_i, sig2_i, sig3_i, sig4_i, sig5_i, sig6_i
+        real(kind=8), dimension(6) :: sig
         
         sig(1)=sig1_i
         sig(2)=sig2_i
