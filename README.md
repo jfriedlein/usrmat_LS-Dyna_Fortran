@@ -61,6 +61,8 @@ c Or equivalently split up
 
 **@todo** Check use of `implicit none` and required additions to existing ls-dyna code.
 
+**@todo** Be careful with "Fortran features", execution order, function/subroutine, use of intent(in), ..., also test in parallel
+
 * For C++ programmers the concept of integer divison might already be known. But for everyone else, who hasn't yet had the pleasure, a small note (or just consult the internet aka google it). When you e.g. divide 1 by 3 as
 ```fortran
 real a
