@@ -61,7 +61,7 @@ c Or equivalently split up
 
 **@todo** Check use of `implicit none` and required additions to existing ls-dyna code.
 
-**@todo** Be careful with "Fortran features", execution order, function/subroutine, use of intent(in), ..., also test in parallel
+**@todo** Be careful with "Fortran features", execution order, function/subroutine, use of intent(in), ..., also test in parallel; http://www.cs.rpi.edu/~szymansk/OOF90/bugs.html#2
 
 * For C++ programmers the concept of integer divison might already be known. But for everyone else, who hasn't yet had the pleasure, a small note (or just consult the internet aka google it). When you e.g. divide 1 by 3 as
 ```fortran
@@ -204,7 +204,7 @@ c
 ```
 
 ## Some notes on proper simulation and solver settings for testing umats
-The setup of an LS-Dyna keyword file for the comprehensive testing of umats feels like another "airport Berlin", and of course, this section is still "work in progress".
+The setup of an LS-Dyna keyword file for the comprehensive testing of umats is still "work in progress".
 
 To check the correctness of the umat (first ignoring the utan), you can use an explicit simulation as stated above. To check your implemented tangent, you must use an implicit computation and best get to the bottom of your resulting convergence rate (requires various solver settings, a snippet is given in the following figure). Nader Abedrabbo outlines some very good aspects in his UMAT workshop in the section on ["UMAT verification"](https://sites.google.com/site/aenader/umat-workshop/umat-verification) (unfortunately only for umat, not utan)
 
@@ -214,7 +214,7 @@ When you check the resulting convergence rate (to verify your tangent), you migh
 
 More details on the setup of these simulations will be given here in the future (small appetiser: ["Numerical examples for LS-Dyna"](https://github.com/jfriedlein/Numerical_examples_in_LS-Dyna)).
 
-**@todo** maybe add one-element test, explain the settings and finish this section before the airport
+**@todo** maybe add one-element test, explain the settings and finish this section
 
 
 ## Material models using tensors
