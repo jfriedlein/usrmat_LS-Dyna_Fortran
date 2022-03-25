@@ -276,21 +276,32 @@ All of the above was done without even considering LS-Dyna or its pre-/postproce
 ## validation
 Elasto-plasticity with linear isotropic hardening can be compared to MAT24. Just be aware that "ETAN" is not the linear hardening modulus "K", but the resulting stiffness ETAN=(E*K)/(E+K) with Young's modulus "E".
 
-## Plane strain
+## 2D: plane strain and axial symmetry
 Looking for some plane strain examples?
 Here is how to use plane strain: https://ftp.lstc.com/anonymous/outgoing/support/FAQ/2d_general_condensed
 
-But: the deformation gradient that enters the material model appears to be utter BS for plane strain.
+But: For plane strain (considered as shell in LS-Dyna) the deformation gradient that enters the material model is in the corotational system of each element. So, it is not the standard deformation gradient. Be very careful with shell elements (stress/strain expressed in local coordinates system, ...).
+
 @todo What happens for axisym? Transformation to "local material coordinate system" (https://ftp.lstc.com/anonymous/outgoing/support/FAQ/user_defined_materials.faq)
 
 The material models typically utilise the fully 3D state.
 
+Helpful information on the element formulations/integration:
+
+https://ftp.lstc.com/anonymous/outgoing/support/FAQ/2d_general_condensed
+
 ## tricks
 Very nice Fortran features: http://www.netlib.org/ccm/page/api/optional.html
+
+Fortran coding standards: http://jules-lsm.github.io/coding_standards/
+
+http://math.hawaii.edu/wordpress/fortran-3/
 
 enumerators via "integer, parameter :: enum_a=1, enum_b=2"
 
 hsv and cm manager
+
+you can open LS-Dyna d3plot files in ParaView and plot values along a line, scale the deformation, ...
 
 ## Code design
 * Outsource umat into separate file: Shown by Nader Abedrabbo here https://sites.google.com/site/aenader/umat-workshop/umat-implement together with the necessary makefile.
