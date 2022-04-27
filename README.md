@@ -303,6 +303,8 @@ hsv and cm manager
 
 you can open LS-Dyna d3plot files in ParaView and plot values along a line, scale the deformation, ...
 
+FAQ: https://ftp.lstc.com/anonymous/outgoing/support/FAQ/
+
 ## Code design
 * Outsource umat into separate file: Shown by Nader Abedrabbo here https://sites.google.com/site/aenader/umat-workshop/umat-implement together with the necessary makefile.
 * Split the code into multiple files
