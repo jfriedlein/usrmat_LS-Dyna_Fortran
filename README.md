@@ -6,7 +6,7 @@ LS-Dyna offers the interfaces and solvers to, among many other things, simulate 
 
 ## Software requirements and suggestions
 To implement and apply UMAT-routines we recommend the following software and tools:
-* An object version of the LS-Dyna version you wish to use. Everything outlined here refers to version R11.1. Their might be slight differences compared to older version, e.g. where to find the files (see final section). The object version is a compressed package (e.g. .zip) typically ending with `_lib.zip`. You can acquire this package from your LSTC support or, in case you possess the login credentials for the `ftp.lstc.com` download side section 'objects' (not 'user'), you can download the version from `https://ftp.lstc.com/objects/pc-dyna/` where all available version are listed (e.g. the here used 'ls-dyna_smp_d_R11_1_0_139588_winx64_ifort2017vs2017_lib.zip').
+* An object version of the LS-Dyna version you wish to use. Everything outlined here refers to version R11.1. Their might be slight differences compared to older version, e.g. where to find the files (see final section). The object version is a compressed package (e.g. .zip) typically ending with `_lib.zip`. You can acquire this package from your LSTC support or, in case you possess the login credentials for the `ftp.lstc.com` download side section 'objects' (not 'user'), you can download the version from `https://ftp.lstc.com/objects/` (Windows and Linux) where all available version are listed (e.g. the here used 'ls-dyna_smp_d_R11_1_0_139588_winx64_ifort2017vs2017_lib.zip').
 * For mpp versions of LS-Dyna you also need some MPP tools, such as MSMPI.
 
 **@todo** Add more infos on MPI (currently it only works for R>=10.2)
@@ -304,6 +304,8 @@ hsv and cm manager
 you can open LS-Dyna d3plot files in ParaView and plot values along a line, scale the deformation, ...
 
 FAQ: https://ftp.lstc.com/anonymous/outgoing/support/FAQ/
+
+use "call cstop("E r r o r   T e r m i n a t i o n")" to properly end the simulation and free the licence
 
 ## Code design
 * Outsource umat into separate file: Shown by Nader Abedrabbo here https://sites.google.com/site/aenader/umat-workshop/umat-implement together with the necessary makefile.
