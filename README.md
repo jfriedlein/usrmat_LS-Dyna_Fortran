@@ -346,8 +346,8 @@ Now you are well advised to check out some other resources on this topic, such a
 * ["UMAT Workshop by Nader Abedrabbo"](https://sites.google.com/site/aenader/umat-workshop)
 * ["Papers on LS-Dyna/-implementations"](https://www.dynalook.com/search?SearchableText=umat) (in case something specific suits you)
 
-## Older LS-Dyna versions
-In R920 everything, so the umat and utan routines, etc. are cramped into the file `dyn21.F`, which achieves more than 10k lines. Besides that the subroutines are identical so you can implement the code just the same. However, you need a different software setup (Visual Studio, Fortran compiler) that fits to the downloaded LS-Dyna object version.
+## Older LS-Dyna versions/releases
+In R920 everything, so the umat and utan routines, etc. are cramped into the file `dyn21.F`, which achieves more than 10k lines. Besides that the subroutines are identical so you can implement the code just the same. However, you need a different software setup (Visual Studio, Fortran compiler, e.g. run nmake in "Intel 64 Visual Studio 2010 mode") that fits to the downloaded LS-Dyna object version. Also the interface to UTAN has changed in newer releases, so be aware of that.
 
 ## todo
 * Check LS-Dyna 2D (plane strain) format of eps and sig (axial-symmetry is 6 and 6 as in 3D)
