@@ -320,6 +320,9 @@ use "call cstop("E r r o r   T e r m i n a t i o n")" to properly end the simula
 
 ## Hypo vs hyper
 strain increment (rate-type) vs deformation gradient
+
+for hypo be aware of necessary rotations for tensorial history variables like back stress tensor using the spin
+
 **@todo**
 
 ## Some notes on Linux
@@ -345,6 +348,8 @@ Now you are well advised to check out some other resources on this topic, such a
 * ["An Overview of  User Defined Interfaces in LS-DYNA"](https://www.dynamore.de/de/download/papers/forum10/papers/L-I-01.pdf) by Tobias Erhart
 * ["UMAT Workshop by Nader Abedrabbo"](https://sites.google.com/site/aenader/umat-workshop)
 * ["Papers on LS-Dyna/-implementations"](https://www.dynalook.com/search?SearchableText=umat) (in case something specific suits you)
+* [Fortran77 coding examples and reusable code](https://people.sc.fsu.edu/~jburkardt/f77_src/f77_src.html)
+* [John Burkardt - valuable code collection](https://people.sc.fsu.edu/~jburkardt/)
 
 ## Older LS-Dyna versions/releases
 In R920 everything, so the umat and utan routines, etc. are cramped into the file `dyn21.F`, which achieves more than 10k lines. Besides that the subroutines are identical so you can implement the code just the same. However, you need a different software setup (Visual Studio, Fortran compiler, e.g. run nmake in "Intel 64 Visual Studio 2010 mode") that fits to the downloaded LS-Dyna object version. Also the interface to UTAN has changed in newer releases, so be aware of that.
