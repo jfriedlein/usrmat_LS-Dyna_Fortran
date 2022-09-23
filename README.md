@@ -307,6 +307,8 @@ FAQ: https://ftp.lstc.com/anonymous/outgoing/support/FAQ/
 
 use "call cstop("E r r o r   T e r m i n a t i o n")" to properly end the simulation and free the licence
 
+list of warning and error codes: http://support.moldex3d.com/r15/en/post-processing_errorandwarningmessages_feainterfaceforsolidmodel.html
+
 ## Code design
 * Outsource umat into separate file: Shown by Nader Abedrabbo here https://sites.google.com/site/aenader/umat-workshop/umat-implement together with the necessary makefile.
 * Split the code into multiple files
