@@ -1,0 +1,77 @@
+c History variables
+      alpha = hsv(1)
+      do v = 1, 6
+         eps_p(v) = hsv(v+1)
+      end do
+c @todo Check how to avoid having to put the matmod code here again
+c      
+c Transform the shear strains into more tensor-like values
+c For loops the formatting seems to be critical:
+c 'do' and 'continue' must be aligned horizontally
+      do v = 1, 3
+         d_eps(v) = eps(v)
+      end do
+      do v = 4, 6
+         d_eps(v) = 0.5 * eps(v)
+      end do
+c Compute the trace of the strains
+      tr_d_eps = trace_of_tensor(d_eps)
+c Compute deviatoric part of the strain increment
+      call deviatoric_part(d_eps,d_eps_dev)
+c Deviatoric part of the old and new stress
+      call deviatoric_part(sig, stress_dev_n)
+      stress_dev_t = stress_dev_n + 2. * shearMod_mu * d_eps_dev
+c Trial hardening stress R_t
+      R_t = - hardMod_K * alpha
+c Trial yield function Phi_t
+      norm_stress_dev_t = tensor_l2_norm(stress_dev_t)
+      Phi_t = norm_stress_dev_t - sqrt(2./3.) * (yieldStress - R_t)
+c Compute IxI
+      DO v = 1, 3
+        DO o = 1, 3
+                IxI(v,o) = 1.
+        END DO
+      END DO
+c Set up I_dev_vo
+      I_dev_vo(1,1) = 2./3.
+      I_dev_vo(2,1) = -1./3.
+      I_dev_vo(3,1) = -1./3.
+c    
+      I_dev_vo(6,6) = 0.5
+      I_dev_vo(5,5) = 0.5
+      I_dev_vo(4,4) = 0.5
+c
+      I_dev_vo(1,2) = -1./3.
+      I_dev_vo(2,2) = 2./3.
+      I_dev_vo(3,2) = -1./3.
+c
+      I_dev_vo(1,3) = -1./3.
+      I_dev_vo(2,3) = -1./3.
+      I_dev_vo(3,3) = 2./3.
+c Check the trial yield function
+c @todo Check the difference between these do-loops and the ones with label and continue
+c @todo we still don't use the Voigt notation for the tangent, do we?
+      if ( Phi_t .lt. 1e-12 ) then
+          DO v = 1, 6
+               DO o = 1, 6
+                  es(v,o) = bulkMod_kappa * IxI(v,o) 
+     &                      + 2. * shearMod_mu * I_dev_vo(v,o)
+              END DO
+          END DO
+      else
+          write (*,*) "Already trying plasti"
+          n = stress_dev_t / (norm_stress_dev_t)
+          d_lambda = Phi_t / ( 2. * shearMod_mu + 2./3. * hardMod_K )
+          DO v = 1, 6
+               DO o = 1, 6
+                    es(v,o) = bulkMod_kappa * IxI(v,o) 
+     &                        + 2. * shearMod_mu * I_dev_vo(v,o)        
+     &                        - 4. * shearMod_mu * shearMod_mu
+     &                          / ( 2.*shearMod_mu + 2./3. * hardMod_K )
+     &                          * n(v)*n(o)
+     &                        - 4. * shearMod_mu * shearMod_mu
+     &                          * d_lambda / norm_stress_dev_t 
+     &                          * ( I_dev_vo(v,0) - n(v)*n(o) )
+              END DO
+          END DO
+      endif

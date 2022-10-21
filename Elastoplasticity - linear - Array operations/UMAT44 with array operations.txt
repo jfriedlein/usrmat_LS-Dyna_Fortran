@@ -1,0 +1,107 @@
+     subroutine umat44 (cm,eps,sig,epsp,hsv,dt1,capa,etype,tt,
+     1 temper,failel,crv,nnpcrv,cma,qmat,elsiz,idele,reject)
+c
+c******************************************************************
+c|  Livermore Software Technology Corporation  (LSTC)             |
+c|  ------------------------------------------------------------  |
+c|  Copyright 1987-2008 Livermore Software Tech. Corp             |
+c|  All rights reserved                                           |
+c******************************************************************
+c
+      include 'nlqparm'
+      include 'bk06.inc'
+      include 'iounits.inc'
+      dimension cm(*),eps(*),sig(*),hsv(*),crv(lq1,2,*),cma(*),qmat(3,3)
+      integer nnpcrv(*)
+      character*5 etype
+      logical failel,reject
+      INTEGER8 idele
+c
+c Declarations:
+c Arrays must be declared as such
+c https://web.stanford.edu/class/me200c/tutorial_77/05_variables.html:
+c Data type 'real' is similar to C++ 'double' for floating point numbers
+c 'integer' -> C++ 'int'
+c 'double precision' -> C++ 'double' in double precision
+c 'logical' -> C++ 'bool'
+      real d_eps(6),  d_eps_dev(6), eps_p(6)
+      real stress_vol_n(6), stress_dev_n(6)
+      real stress_vol(6), stress_dev(6), stress_nOne(6)
+      real stress_dev_t(6)
+      real delta_v(6), n(6)
+c Material parameters
+      lame_lambda = cm(1)
+      shearMod_mu = cm(2)
+      bulkMod_kappa = cm(1) + 2./3. * shearMod_mu
+      hardMod_K = cm(3)
+      yieldStress = cm(4)
+c History variables
+      alpha = hsv(1)
+      do v = 1, 6
+         eps_p(v) = hsv(v+1)
+      end do
+c 
+      if (ncycle.eq.1) then
+          alpha=0.
+          do v=1,6
+              !sig(v)=0.
+              eps_p(v)=0.
+          end do
+      endif
+c
+c Transform the shear strains into more tensor-like values
+c For loops the formatting seems to be critical:
+c 'do' and 'continue' must be aligned horizontally
+      do v = 1, 3
+         d_eps(v) = eps(v)
+      end do
+      do v = 4, 6
+         d_eps(v) = 0.5 * eps(v)
+      end do
+c Compute the trace of the strains
+      tr_d_eps = trace_of_tensor(d_eps)
+c Compute deviatoric part of the strain increment
+      call deviatoric_part(d_eps,d_eps_dev)
+c Compute the Kronecker delta
+      delta_v(1)=1
+      delta_v(2)=1
+      delta_v(3)=1
+c Volumetric part of the old and new stress
+      call volumetric_part(sig, stress_vol_n)
+      stress_vol = stress_vol_n + bulkMod_kappa * tr_d_eps * delta_v
+c Deviatoric part of the old and new stress
+      call deviatoric_part(sig, stress_dev_n)
+      stress_dev_t(1) = stress_dev_n(1) + 2. * shearMod_mu * d_eps_dev(1)
+c Trial hardening stress R_t
+      R_t = - hardMod_K * alpha
+c Trial yield function Phi_t
+      norm_stress_dev_t = tensor_l2_norm(stress_dev_t)
+      write(*,*) "d_eps=",d_eps(2),
+     & " , norm_stress_dev_t=",norm_stress_dev_t," , alpha=",alpha,
+     & ", yieldS=",yieldStress
+      Phi_t = norm_stress_dev_t - sqrt(2./3.) * (yieldStress - R_t)
+      write(iotty,*) " Phi_t= ",Phi_t
+c Check the trial yield function
+      if ( Phi_t .lt. 1e-12 ) then
+          stress_nOne = stress_vol + stress_dev_t
+          ! Keep the history unchanged
+      else
+          n = stress_dev_t / (norm_stress_dev_t)
+          d_lambda = Phi_t / ( 2.*shearMod_mu + 2./3. * hardMod_K )
+          alpha = alpha + d_lambda * sqrt(2./3.)
+          eps_p = eps_p + d_lambda * n
+          stress_dev = stress_dev_t - 2. * shearMod_mu * d_lambda * n
+          stress_nOne = stress_vol + stress_dev
+      endif
+c @todo Check whether we need to save eps_p back into hsv or if that is done by-reference
+c Save stress and plastic strains into the return arguments
+      do v = 1, 6
+          sig(v) = stress_nOne(v)
+          hsv(v+1) = eps_p(v)
+      end do
+c Save the internal variable alpha into hsv(1)
+      hsv(1) = alpha
+      write(*,*) " d_lambda= ",d_lambda," , sig(2)= ",sig(2),
+     &               " , alpha=",alpha
+      return
+      end
