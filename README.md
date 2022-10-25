@@ -309,6 +309,8 @@ use "call cstop("E r r o r   T e r m i n a t i o n")" to properly end the simula
 
 list of warning and error codes: http://support.moldex3d.com/r15/en/post-processing_errorandwarningmessages_feainterfaceforsolidmodel.html
 
+model checker: https://2021.help.altair.com/2021/hwdesktop/engsol/topics/user_interface/model_checker_ls-dyna_r.htm
+
 ## Code design
 * Outsource umat into separate file: Shown by Nader Abedrabbo here https://sites.google.com/site/aenader/umat-workshop/umat-implement together with the necessary makefile.
 * Split the code into multiple files
