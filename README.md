@@ -291,6 +291,8 @@ Helpful information on the element formulations/integration:
 https://ftp.lstc.com/anonymous/outgoing/support/FAQ/2d_general_condensed
 
 ## tricks
+The initialisation step can be detected by checking whether the time step size is zero (e.g. dt1<1e-10 for implicit integration). This can also be helpful when remeshing is used, because LS-Dyna solves an initialisation step at every remeshing (but not all releases use dt1 in this initialisation step, it works e.g. for R13). So, in case of some problems or features that need to be done after remeshing and the solution transfer, you can detect this initialisation step via dt1 and do something special for this step.
+
 Very nice Fortran features: http://www.netlib.org/ccm/page/api/optional.html
 
 Fortran coding standards: http://jules-lsm.github.io/coding_standards/
