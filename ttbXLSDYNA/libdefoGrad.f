@@ -3,7 +3,7 @@ c indices running as noted below (LS-Dyna User manual Appendix-A "Deformation gr
       function vec9_LSTC_to_unsymTensor_2(vec9)
         implicit none
         
-        real(kind=8), dimension(6), intent(in) :: vec9
+        real*8, dimension(9), intent(in) :: vec9
         type(Tensor2) :: vec9_LSTC_to_unsymTensor_2
         
         vec9_LSTC_to_unsymTensor_2%ab(1,1) = vec9(1)
@@ -15,7 +15,7 @@ c indices running as noted below (LS-Dyna User manual Appendix-A "Deformation gr
         vec9_LSTC_to_unsymTensor_2%ab(1,3) = vec9(7)
         vec9_LSTC_to_unsymTensor_2%ab(2,3) = vec9(8)
         vec9_LSTC_to_unsymTensor_2%ab(3,3) = vec9(9)
-
+        
       end function vec9_LSTC_to_unsymTensor_2
       
 c The inverse function to store an unsymmetric second order tensor as the LSTC-type
@@ -23,7 +23,7 @@ c list. (Only for the sake of completeness, usually not needed.)
       function unsymTensor_2_to_vec9_LSTC(unsymTen2)
         implicit none
         
-        real(kind=8), dimension(6) :: unsymTensor_2_to_vec9_LSTC
+        real(kind=8), dimension(9) :: unsymTensor_2_to_vec9_LSTC
         type(Tensor2), intent(in) :: unsymTen2
         
         unsymTensor_2_to_vec9_LSTC(1) = unsymTen2%ab(1,1)
