@@ -89,7 +89,6 @@ Some more basics on Fortran (and Abaqus user interfaces) can be found in this [P
 [dyn21umats.F]:
 ```fortran
 c Compiler flags and include for the tensor toolbox
-#define NOR4
 #include 'ttb/ttb_library.F'
 [...]
       subroutine umat43 (cm,eps,sig,epsp,hsv,dt1,capa,etype,tt,
@@ -313,6 +312,8 @@ list of warning and error codes: http://support.moldex3d.com/r15/en/post-process
 
 model checker: https://2021.help.altair.com/2021/hwdesktop/engsol/topics/user_interface/model_checker_ls-dyna_r.htm
 
+use caller environment to speed-up compilation and still use LS-Dyna context
+
 ## Code design
 * Outsource umat into separate file: Shown by Nader Abedrabbo here https://sites.google.com/site/aenader/umat-workshop/umat-implement together with the necessary makefile.
 * Split the code into multiple files
@@ -341,11 +342,6 @@ eclipse photran
 "0.5" vs "5.0d-1"
 **@todo** Let Andreas know that in file "libexp.f" line 55 "5.0d-1" is needed instead of 0.5 for Linux build
 
-problems with r4 disappear if ifort flag "-r8" is removed (this flag seems to set the default "kind" to 8), without this flag, the compiler generates no errors wrt the r4 variants
-
-"real(kind=8)" changed to "real"
-
-problems when changing "dyn21umats.f" to "dyn21umats.F", but problems with r4 variants did not occur, left as ".f" with removed _r4 variants in ttb to avoid "undefined reference to 'usermsg_'", etc.
 
 ## References/Further reading
 Now you are well advised to check out some other resources on this topic, such as:
