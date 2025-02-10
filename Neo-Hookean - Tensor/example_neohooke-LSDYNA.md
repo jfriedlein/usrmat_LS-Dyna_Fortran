@@ -313,3 +313,7 @@ To obtain proper quadratic convergence, use option "IGS=1" to let LS-DYNA use th
 
 The results and convergence of the tensor-based umat implementation can also be compared to an existing LS-DYNA neo-Hookean implementation. The latter is contained by default in umat45 and used Voigt vector notation. The material card to set up this umat45 is available as "05_UMAT45_NeoHookean-Voigt.inc" and renders the same results as our umat43.
 
+
+## Example input file
+The subfolder "OneElementTest" contains an exemplary input file to simulate the uniaxial tension of a single element. It contains the necessary settings and uses *INCLUDE to load the user-defined material card.
+
