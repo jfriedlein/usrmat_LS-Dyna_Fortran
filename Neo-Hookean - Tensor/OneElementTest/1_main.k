@@ -81,7 +81,7 @@ $#   nid               x               y               z      tc      rc
 $#   eid     pid      n1      n2      n3      n4      n5      n6      n7      n8
        1       1       1       2       4       3       5       6       8       7
 *INCLUDE
-$../05_UMAT43_NeoHookean-Tensor.inc
-../05_UMAT45_NeoHookean-Voigt.inc
+../05_UMAT43_NeoHookean-Tensor.inc
+$../05_UMAT45_NeoHookean-Voigt.inc
 $
 *END
