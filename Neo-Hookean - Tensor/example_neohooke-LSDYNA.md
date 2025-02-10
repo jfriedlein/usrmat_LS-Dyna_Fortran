@@ -311,4 +311,5 @@ To obtain proper quadratic convergence, use option "IGS=1" to let LS-DYNA use th
 
 <img src="https://github.com/jfriedlein/usrmat_LS-DYNA_Fortran/blob/master/Neo-Hookean%20-%20Tensor/UMAT43-NeoHookean-Tensor%20-%20quadratic%20convergence.png" width="500">
 
+The results and convergence of the tensor-based umat implementation can also be compared to an existing LS-DYNA neo-Hookean implementation. The latter is contained by default in umat45 and used Voigt vector notation. The material card to set up this umat45 is available as "05_UMAT45_NeoHookean-Voigt.inc" and renders the same results as our umat43.
 
