@@ -32,9 +32,8 @@ With
 
 ## User-defined material routine "umat"
 ### The commented program
-In LS-Dyna we can expand the existing file `dyn21umats.F`. At the beginning of the Fortran file include the tensor toolbox after defining the flag `NOR4`. The latter ensures that the r4 variants of implemented functions are skipped, which would else generate compiler errors in LS-Dyna (see https://github.com/adtzlr/ttb/issues/10).
+In LS-Dyna we can expand the existing file `dyn21umats.F`. At the beginning of the Fortran file include the tensor toolbox.
 ```fortran
-#define NOR4
 #include  'ttb/ttb_library.F'
 ```
 Then scroll down to an unused user-defined material, for instance umat43, reading
@@ -46,7 +45,6 @@ Firstly, we have to declare the usage of the tensor module and the LS-DYNA exten
 ```fortran
 c Use the tensor toolbox
       use Tensor
-      use TensorXLSDYNA
 ```
 Next, the standard LS-Dyna declarations follow and don't need to be altered.
 ```fortran
@@ -112,11 +110,12 @@ c
 
 ### The plain program
 ```fortran
+      #include  'ttb/ttb_library.F'
+...
       subroutine umat43 (cm,eps,sig,epsp,hsv,dt1,capa,etype,tt,
      1 temper,failel,crv,nnpcrv,cma,qmat,elsiz,idele,reject)
 c
       use Tensor
-      use TensorXLSDYNA
 c
       include 'nlqparm'
       include 'bk06.inc'
@@ -142,7 +141,15 @@ c
 c
       Eye = identity2(Eye)
 c
-      defoGrad_F = defoGrad( hsv(1:9) )
+      defoGrad_F%ab(1,1) = hsv(1)
+      defoGrad_F%ab(2,1) = hsv(2)
+      defoGrad_F%ab(3,1) = hsv(3)
+      defoGrad_F%ab(1,2) = hsv(4)
+      defoGrad_F%ab(2,2) = hsv(5)
+      defoGrad_F%ab(3,2) = hsv(6)
+      defoGrad_F%ab(1,3) = hsv(7)
+      defoGrad_F%ab(2,3) = hsv(8)
+      defoGrad_F%ab(3,3) = hsv(9)
 c    
       det_F = det(defoGrad_F)
 c
@@ -168,7 +175,6 @@ We again load the modules
 ```fortran
 c Use the tensor toolbox
       use Tensor
-      use TensorXLSDYNA
 ```
 Use the standard LS-Dyna declarations
 ```fortran
@@ -206,7 +212,15 @@ c Compute the Lame parameters lambda and mu (or G)
 c Get the unit tensor via the tensor toolbox
       Eye = identity2(Eye)
 c Extract the deformation gradient from the history 'hsv'
-      defoGrad_F = defoGrad( hsv(1:9) )
+      defoGrad_F%ab(1,1) = hsv(1)
+      defoGrad_F%ab(2,1) = hsv(2)
+      defoGrad_F%ab(3,1) = hsv(3)
+      defoGrad_F%ab(1,2) = hsv(4)
+      defoGrad_F%ab(2,2) = hsv(5)
+      defoGrad_F%ab(3,2) = hsv(6)
+      defoGrad_F%ab(1,3) = hsv(7)
+      defoGrad_F%ab(2,3) = hsv(8)
+      defoGrad_F%ab(3,3) = hsv(9)
 c Compute the Jacobian as the determinant of the deformation gradient      
       det_F = det(defoGrad_F)
 ```
@@ -235,7 +249,6 @@ and end the subroutine.
      1 temper,es,crv,nnpcrv,failel,cma,qmat)
 c
       use Tensor
-      use TensorXLSDYNA
 c
       include 'nlqparm'
       real(kind=8), dimension (*) :: cm, eps, sig, hsv
@@ -260,7 +273,15 @@ c
 c
       Eye = identity2(Eye)
 c
-      defoGrad_F = defoGrad( hsv(1:9) )
+      defoGrad_F%ab(1,1) = hsv(1)
+      defoGrad_F%ab(2,1) = hsv(2)
+      defoGrad_F%ab(3,1) = hsv(3)
+      defoGrad_F%ab(1,2) = hsv(4)
+      defoGrad_F%ab(2,2) = hsv(5)
+      defoGrad_F%ab(3,2) = hsv(6)
+      defoGrad_F%ab(1,3) = hsv(7)
+      defoGrad_F%ab(2,3) = hsv(8)
+      defoGrad_F%ab(3,3) = hsv(9)
 c     
       det_F = det(defoGrad_F)
 c
